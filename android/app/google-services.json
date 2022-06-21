@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "408378021008",
+    "project_id": "reegig-11c11",
+    "storage_bucket": "reegig-11c11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408378021008:android:15629c28b94f2954ed7415",
+        "android_client_info": {
+          "package_name": "comreegig.hassansiddiq.ree_gig"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "408378021008-1ei10i3fborafsd9osj9kehng2b3j0u2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIvda8j3eIOZtDW3DPBo97Kje2IcJPgVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "408378021008-1ei10i3fborafsd9osj9kehng2b3j0u2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
