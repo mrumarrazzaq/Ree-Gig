@@ -41,8 +41,31 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
     });
   }
 
+  String _profileImage = '';
+  fetch() async {
+    print('-------------------------------------');
+    print('Current user data is fetching');
+    try {
+      await FirebaseFirestore.instance
+          .collection('User Data')
+          .doc(widget.userEmail)
+          .get()
+          .then((ds) {
+        _profileImage = ds['imageUrl'];
+      });
+      print('£££££££££££££££££££££££££££££');
+      print(_profileImage);
+      setState(() {
+        _profileImage = _profileImage;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   void initState() {
+    fetch();
     generateRandom();
     super.initState();
   }
@@ -84,7 +107,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                               builder: (context) => ChatScreen(
                                 name: widget.userName,
                                 receiverEmail: widget.userEmail,
-                                imagePath: widget.userProfileUrl,
+                                imagePath: _profileImage,
                                 isChartHistorySave: true,
                               ),
                             ),
@@ -93,7 +116,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 14.0),
-                        child: widget.userProfileUrl == ''
+                        child: _profileImage == ''
                             ? CircleAvatar(
                                 foregroundImage: const AssetImage(
                                   'icons/default_profile.png',
@@ -102,8 +125,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                                 radius: 30,
                               )
                             : CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(widget.userProfileUrl),
+                                backgroundImage: NetworkImage(_profileImage),
                                 backgroundColor: lightPurple.withOpacity(0.5),
                                 radius: 30),
                       ),
@@ -126,7 +148,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                                     builder: (context) => ChatScreen(
                                       name: widget.userName,
                                       receiverEmail: widget.userEmail,
-                                      imagePath: widget.userProfileUrl,
+                                      imagePath: _profileImage,
                                       isChartHistorySave: true,
                                     ),
                                   ),
@@ -137,7 +159,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: currentUserEmail.toString() ==
                                       widget.userEmail
-                                  ? Text('')
+                                  ? const Text('')
                                   : Text.rich(
                                       TextSpan(
                                         text: '',

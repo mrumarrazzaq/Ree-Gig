@@ -111,6 +111,9 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
                                   children: [
                                     IconButton(
                                         onPressed: () {
+                                          setState(() {
+                                            _isLoading = false;
+                                          });
                                           Navigator.pop(context);
                                         },
                                         icon: Icon(
@@ -132,28 +135,13 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
                                         }
                                       },
                                       child: _isLoading
-                                          ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SizedBox(
-                                                  height: 30.0,
-                                                  width: 30.0,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: blackColor,
-                                                    strokeWidth: 2.0,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 15.0,
-                                                ),
-                                                Text(
-                                                  'Please Wait...',
-                                                  style: TextStyle(
-                                                    color: blackColor,
-                                                  ),
-                                                ),
-                                              ],
+                                          ? SizedBox(
+                                              height: 10.0,
+                                              width: 10.0,
+                                              child: CircularProgressIndicator(
+                                                color: blackColor,
+                                                strokeWidth: 1.0,
+                                              ),
                                             )
                                           : Text(
                                               "Done",
@@ -254,6 +242,10 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
                                   children: [
                                     IconButton(
                                         onPressed: () {
+                                          setState(() {
+                                            _isLoading = false;
+                                          });
+                                          passwordController.clear();
                                           Navigator.of(context).pop();
                                         },
                                         icon: Icon(
@@ -275,28 +267,13 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
                                         }
                                       },
                                       child: _isLoading
-                                          ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SizedBox(
-                                                  height: 30.0,
-                                                  width: 30.0,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: whiteColor,
-                                                    strokeWidth: 2.0,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 15.0,
-                                                ),
-                                                Text(
-                                                  'Please Wait...',
-                                                  style: TextStyle(
-                                                    color: whiteColor,
-                                                  ),
-                                                ),
-                                              ],
+                                          ? SizedBox(
+                                              height: 10.0,
+                                              width: 10.0,
+                                              child: CircularProgressIndicator(
+                                                color: blackColor,
+                                                strokeWidth: 1.0,
+                                              ),
                                             )
                                           : Text(
                                               'Done',
@@ -383,7 +360,7 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
     );
   }
 
-  //Update Passwrd
+  //Update Password
   CollectionReference password =
       FirebaseFirestore.instance.collection('User Data');
   Future<void> updatePassword() {
@@ -393,13 +370,13 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
           'password': passwordController.text,
         })
         .then((value) => print('Password Update by email : $currentUserEmail'))
-        .catchError((error) => print('Faild to Update Password $error'));
+        .catchError((error) => print('Failed to Update Password $error'));
   }
 
   updateData({required String title}) async {
     final user = FirebaseAuth.instance.currentUser;
     print(user!.email);
-
+    _isLoading = true;
     if (title == 'personName') {
       try {
         await FirebaseFirestore.instance
@@ -412,8 +389,11 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
           gravity: ToastGravity.BOTTOM, // location
           backgroundColor: Colors.green,
         );
+        setState(() {
+          _isLoading = false;
+        });
       } catch (e) {
-        print("Name chages Fail");
+        print("Name changes Fail");
       }
     } else if (title == 'password') {
       try {
@@ -426,9 +406,20 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
           gravity: ToastGravity.BOTTOM, // location
           backgroundColor: Colors.green,
         );
+
         if (ref == null) {}
+        setState(() {
+          _isLoading = false;
+        });
+        passwordController.clear();
       } catch (e) {
-        print("Password chages Fail");
+        Fluttertoast.showToast(
+          msg: 'Something went wrong', // message
+          toastLength: Toast.LENGTH_SHORT, // length
+          gravity: ToastGravity.BOTTOM, // location
+          backgroundColor: Colors.black,
+        );
+        print("Password changes Fail");
       }
     }
     Navigator.pop(context);

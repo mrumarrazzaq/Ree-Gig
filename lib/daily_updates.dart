@@ -9,8 +9,10 @@ class DailyUpdates extends StatefulWidget {
 }
 
 class _DailyUpdatesState extends State<DailyUpdates> {
-  final Stream<QuerySnapshot> _dailyUpdated =
-      FirebaseFirestore.instance.collection('Requests').snapshots();
+  final Stream<QuerySnapshot> _dailyUpdated = FirebaseFirestore.instance
+      .collection('Requests')
+      .orderBy('Created AT', descending: true)
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class _DailyUpdatesState extends State<DailyUpdates> {
 //            print('Document id : ${document.id}');
             id['id'] = document.id;
           }).toList();
+
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

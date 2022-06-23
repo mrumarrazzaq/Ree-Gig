@@ -23,14 +23,13 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance;
   TextEditingController _massageController = TextEditingController();
-  String _time = '0:00 AM';
-  saveMassages() async {
+  saveMassages(String time) async {
     await FirebaseFirestore.instance.collection('Chats').add({
       'message': _massageController.text,
       'Sender Email': currentUserEmail.toString(),
       'Receiver Email': widget.receiverEmail,
-      'Created At': currentDateTime,
-      'Time': _time,
+      'Created At': DateTime.now(),
+      'Time': time,
     });
     _massageController.clear();
     print('-------------------------');
@@ -38,7 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print('-------------------------');
   }
 
-  saveChatHistory() async {
+  saveChatHistory(String time) async {
     await FirebaseFirestore.instance
         .collection('Recent Chats ${currentUserEmail.toString()}')
         .add({
@@ -46,7 +45,7 @@ class _ChatScreenState extends State<ChatScreen> {
       'Receiver Email': widget.receiverEmail,
       'Receiver profileImageUrl': widget.imagePath,
       'Created At': currentDateTime,
-      'Time': _time,
+      'Time': time,
     });
     _massageController.clear();
     print('-------------------------');
@@ -67,7 +66,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    _time = formatTime();
 //    if (widget.isChartHistorySave) {
 //      saveChatHistory();
 //    }
@@ -103,11 +101,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? CircleAvatar(
                           radius: 30.0,
                           backgroundImage: NetworkImage(widget.imagePath),
+                          backgroundColor: lightPurple.withOpacity(0.4),
                         )
-                      : const CircleAvatar(
+                      : CircleAvatar(
                           radius: 30.0,
-                          backgroundImage:
-                              AssetImage('icons/default_profile.png'),
+                          foregroundImage:
+                              const AssetImage('icons/default_profile.png'),
+                          backgroundColor: lightPurple.withOpacity(0.4),
                         ),
                   title: Text(widget.name,
                       style: TextStyle(
@@ -164,7 +164,7 @@ class _ChatScreenState extends State<ChatScreen> {
 //                  print('Document id : ${document.id}');
                             id['id'] = document.id;
                           }).toList();
-                          storedMassages.reversed;
+                          // storedMassages.reversed;
 //                          for (int i = 0; i < storedMassages.length; i++) {
 //                            _senderEmail = storedMassages[i]['Sender Email'];
 //                            _receiverEmail =
@@ -258,7 +258,19 @@ class _ChatScreenState extends State<ChatScreen> {
                   splashRadius: 10,
                   onPressed: () async {
                     if (_massageController.text.isNotEmpty) {
-                      await saveMassages();
+                      String time;
+                      if (currentDateTime.hour > 12) {
+                        int hr = DateTime.now().hour - 12;
+                        int min = DateTime.now().minute;
+                        int sec = DateTime.now().second;
+                        int milisec = DateTime.now().microsecond;
+                        time = hr.toString() + ' : ' + min.toString() + ' PM';
+                      } else {
+                        int hr = DateTime.now().hour;
+                        int min = DateTime.now().minute;
+                        time = hr.toString() + ' : ' + min.toString() + ' AM';
+                      }
+                      await saveMassages(time);
                     }
                   },
                 ),

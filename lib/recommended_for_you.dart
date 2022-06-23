@@ -9,8 +9,10 @@ class RecommendedForYou extends StatefulWidget {
 }
 
 class _RecommendedForYouState extends State<RecommendedForYou> {
-  final Stream<QuerySnapshot> _dailyUpdated =
-      FirebaseFirestore.instance.collection('Requests').snapshots();
+  final Stream<QuerySnapshot> _dailyUpdated = FirebaseFirestore.instance
+      .collection('Requests')
+      .orderBy('Created AT', descending: true)
+      .snapshots();
 
   String _userRecommended = '';
   readRecommendation() async {

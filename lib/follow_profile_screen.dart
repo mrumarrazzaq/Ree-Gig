@@ -124,8 +124,8 @@ class _FollowProfileScreenState extends State<FollowProfileScreen> {
                                         fontStyle: FontStyle.italic)),
                                 TextSpan(
                                     text: '$stringFollowings Following',
-                                    style:
-                                        TextStyle(fontStyle: FontStyle.italic)),
+                                    style: const TextStyle(
+                                        fontStyle: FontStyle.italic)),
                               ],
                             ),
                           ),
@@ -252,7 +252,13 @@ class FreelancerProfileRequestsAndAids extends StatelessWidget {
 //                            shrinkWrap: true,
                   children: [
                     storeRequests.isEmpty
-                        ? const Text('No daily Update')
+                        ? const Padding(
+                            padding: EdgeInsets.only(top: 30.0),
+                            child: Text(
+                              'No Item Find',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          )
                         : Container(),
                     for (int i = 0; i < storeRequests.length; i++) ...[
                       CustomContainer1(

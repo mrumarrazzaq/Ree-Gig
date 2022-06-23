@@ -29,20 +29,20 @@ final currentUserEmail = FirebaseAuth.instance.currentUser!.email;
 
 DateTime currentDateTime = DateTime.now();
 
-String formatTime() {
+preciseTime() {
   String time;
-
-  if (currentDateTime.hour > 12) {
-    int hr = currentDateTime.hour - 12;
-    int min = currentDateTime.minute;
-    time = hr.toString() + ' : ' + min.toString() + ' PM';
-    return time;
-  } else {
-    int hr = currentDateTime.hour;
-    int min = currentDateTime.minute;
-    time = hr.toString() + ' : ' + min.toString() + ' AM';
-    return time;
-  }
+  int hr = currentDateTime.hour - 12;
+  int min = currentDateTime.minute;
+  int sec = currentDateTime.second;
+  int milisec = currentDateTime.microsecond;
+  time = hr.toString() +
+      ' : ' +
+      min.toString() +
+      ' : ' +
+      sec.toString() +
+      ' : ' +
+      milisec.toString();
+  return time;
 }
 
 String mapLocation = 'Get Map Location';

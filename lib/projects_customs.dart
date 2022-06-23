@@ -520,7 +520,13 @@ class _CustomReviewsState extends State<CustomReviews> {
   ];
 
   processStars(int starValue) {
-    if (starValue == 1) {
+    if (starValue == 0) {
+      stars[0] = Colors.grey;
+      stars[1] = Colors.grey;
+      stars[2] = Colors.grey;
+      stars[3] = Colors.grey;
+      stars[4] = Colors.grey;
+    } else if (starValue == 1) {
       stars[0] = Colors.yellow;
       stars[1] = Colors.grey;
       stars[2] = Colors.grey;

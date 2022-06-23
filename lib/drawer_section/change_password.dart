@@ -73,7 +73,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           'password': newPasswordController.text,
         })
         .then((value) => print('Password Update by email : $currentUserEmail'))
-        .catchError((error) => print('Faild to Update Password $error'));
+        .catchError((error) => print('Failed to Update Password $error'));
   }
 
   changePassword() async {
@@ -110,7 +110,16 @@ class _ChangePasswordState extends State<ChangePassword> {
 
       // ignore: empty_catches
     } catch (e) {
-      print("Password chages Fail");
+      Fluttertoast.showToast(
+        msg: 'Something went wrong', // message
+        toastLength: Toast.LENGTH_SHORT, // length
+        gravity: ToastGravity.BOTTOM, // location
+        backgroundColor: Colors.black,
+      );
+      print("Password changes Fail");
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

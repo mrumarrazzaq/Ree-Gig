@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 
@@ -53,14 +54,14 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
     }
   }
 
-  saveReview() async {
+  saveReview(String time) async {
     final json = {
       'Person Name': personName,
       'Profile Image Url': imageURL,
       'Review Text': _reviewController.text,
       'Stars': _reviewStars,
       'Created At': currentDateTime,
-      'Time': _time,
+      'Time': time,
     };
     await FirebaseFirestore.instance
         .collection('Reviews ${widget.email}')
@@ -94,7 +95,6 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
   @override
   void initState() {
     fetch();
-    _time = formatTime();
     super.initState();
   }
 
@@ -222,6 +222,8 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           IconButton(
                                               splashColor: Colors.yellow
@@ -394,7 +396,28 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
                                                   print(_reviewController.text);
                                                   _isLoading = true;
                                                 });
-                                                await saveReview();
+
+                                                String time;
+                                                if (currentDateTime.hour > 12) {
+                                                  int hr =
+                                                      DateTime.now().hour - 12;
+                                                  int min =
+                                                      DateTime.now().minute;
+                                                  time = hr.toString() +
+                                                      ' : ' +
+                                                      min.toString() +
+                                                      ' PM';
+                                                  await saveReview(time);
+                                                } else {
+                                                  int hr = DateTime.now().hour;
+                                                  int min =
+                                                      DateTime.now().minute;
+                                                  time = hr.toString() +
+                                                      ' : ' +
+                                                      min.toString() +
+                                                      ' AM';
+                                                  await saveReview(time);
+                                                }
                                                 _isLoading = false;
                                                 resetStars(0);
                                                 _reviewStars = 0;
