@@ -20,15 +20,15 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController personNameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController currentPasswordController =
+      TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
 
   bool _isLoading = false;
-  @override
-  void initState() {
-    super.initState();
-    fetch();
-  }
+  bool _obscureText1 = true;
+  bool _obscureText2 = true;
 
+  String _currentPassword = '';
   fetch() async {
     final user = FirebaseAuth.instance.currentUser;
     print(user!.email);
@@ -40,8 +40,13 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
           .get()
           .then((ds) {
         personName = ds['personName'];
+        _currentPassword = ds['password'];
       });
-      setState(() {});
+      print('---------------');
+      print(_currentPassword);
+      setState(() {
+        _currentPassword = _currentPassword;
+      });
     } catch (e) {
       print(e.toString());
     }
@@ -60,6 +65,26 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
     } else {
       return null;
     }
+  }
+
+  String? validateCurrentPassword(value) {
+    print('======================');
+    print('_currentPassword : $_currentPassword');
+    print('currentPasswordController.text : ${currentPasswordController.text}');
+
+    if (value.isEmpty) {
+      return 'Please enter current password';
+    } else if (_currentPassword != currentPasswordController.text) {
+      return 'Wrong current password';
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    fetch();
+    super.initState();
   }
 
   @override
@@ -245,7 +270,8 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
                                           setState(() {
                                             _isLoading = false;
                                           });
-                                          passwordController.clear();
+                                          newPasswordController.clear();
+                                          currentPasswordController.clear();
                                           Navigator.of(context).pop();
                                         },
                                         icon: Icon(
@@ -290,28 +316,103 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
                                     const EdgeInsets.fromLTRB(30, 0, 30, 0),
                                 child: Form(
                                   key: _formKey,
-                                  child: TextFormField(
-                                    controller: passwordController,
-                                    validator: validatePassword,
-                                    obscureText: true,
-                                    decoration: InputDecoration(
-                                        hintText: '********',
-                                        labelStyle:
-                                            TextStyle(color: Colors.black),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          borderSide: BorderSide(
-                                              color: Colors.black, width: 0.5),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: TextFormField(
+                                          obscureText: _obscureText1,
+                                          controller: currentPasswordController,
+                                          validator: validateCurrentPassword,
+                                          decoration: InputDecoration(
+                                            hintText: 'Current Password',
+                                            labelStyle:
+                                                TextStyle(color: Colors.black),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 16),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.black,
+                                                  width: 0.5),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.black,
+                                                  width: 2.0),
+                                            ),
+                                            // suffixIcon: GestureDetector(
+                                            //   child: _obscureText1
+                                            //       ? Icon(
+                                            //           Icons.visibility,
+                                            //           size: 20.0,
+                                            //           color: blackColor,
+                                            //         )
+                                            //       : Icon(
+                                            //           Icons.visibility_off,
+                                            //           size: 20.0,
+                                            //           color: blackColor,
+                                            //         ),
+                                            //   onTap: () {
+                                            //     setState(() {
+                                            //       _obscureText1 =
+                                            //           !_obscureText1;
+                                            //     });
+                                            //   },
+                                            // ),
+                                          ),
                                         ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          borderSide: BorderSide(
-                                              color: Colors.black, width: 2.0),
-                                        )),
+                                      ),
+                                      TextFormField(
+                                        obscureText: _obscureText2,
+                                        controller: newPasswordController,
+                                        validator: validatePassword,
+                                        decoration: InputDecoration(
+                                          hintText: 'New Password',
+                                          labelStyle:
+                                              TextStyle(color: Colors.black),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 0.5),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 2.0),
+                                          ),
+                                          // suffixIcon: GestureDetector(
+                                          //   child: _obscureText2
+                                          //       ? Icon(
+                                          //           Icons.visibility,
+                                          //           size: 18.0,
+                                          //           color: blackColor,
+                                          //         )
+                                          //       : Icon(
+                                          //           Icons.visibility_off,
+                                          //           size: 18.0,
+                                          //           color: blackColor,
+                                          //         ),
+                                          //   onTap: () {
+                                          //     setState(() {
+                                          //       _obscureText2 = !_obscureText2;
+                                          //     });
+                                          //   },
+                                          // ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -367,7 +468,7 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
     return password
         .doc(currentUserEmail)
         .update({
-          'password': passwordController.text,
+          'password': newPasswordController.text,
         })
         .then((value) => print('Password Update by email : $currentUserEmail'))
         .catchError((error) => print('Failed to Update Password $error'));
@@ -398,7 +499,7 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
     } else if (title == 'password') {
       try {
         final ref = FirebaseAuth.instance.currentUser;
-        await ref!.updatePassword(passwordController.text);
+        await ref!.updatePassword(newPasswordController.text);
         await updatePassword();
         Fluttertoast.showToast(
           msg: 'Password Changed Successfully', // message
@@ -411,7 +512,8 @@ class _ProfileSectionDetailState extends State<ProfileSectionDetail> {
         setState(() {
           _isLoading = false;
         });
-        passwordController.clear();
+        currentPasswordController.clear();
+        newPasswordController.clear();
       } catch (e) {
         Fluttertoast.showToast(
           msg: 'Something went wrong', // message

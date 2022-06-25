@@ -15,14 +15,38 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   final _formKey = GlobalKey<FormState>();
-  bool _obscureText = true;
+  bool _obscureText1 = true;
+  bool _obscureText2 = true;
   bool _isLoading = false;
   var newPassword = "";
   final newPasswordController = TextEditingController();
+  final currentPasswordController = TextEditingController();
+  String _currentPassword = '';
+  fetch() async {
+    final user = FirebaseAuth.instance.currentUser;
+    print(user!.email);
+    print('-------------------------------------');
+    print('Current user data is fetching');
+    try {
+      await FirebaseFirestore.instance
+          .collection('User Data')
+          .doc(user.email)
+          .get()
+          .then((ds) {
+        _currentPassword = ds['password'];
+      });
+      print(_currentPassword);
+      setState(() {
+        _currentPassword = _currentPassword;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   String? validatePassword(value) {
     if (value.isEmpty) {
-      return 'Please enter new password*';
+      return 'Please enter current password';
     } else if (value.length < 8) {
       return 'Should be at least 8 characters';
     } else if (value.length > 25) {
@@ -30,6 +54,22 @@ class _ChangePasswordState extends State<ChangePassword> {
     } else {
       return null;
     }
+  }
+
+  String? validateCurrentPassword(value) {
+    if (value.isEmpty) {
+      return 'Please enter current password';
+    } else if (_currentPassword != currentPasswordController.text) {
+      return 'Wrong current password';
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    fetch();
+    super.initState();
   }
 
   @override
@@ -150,8 +190,54 @@ class _ChangePasswordState extends State<ChangePassword> {
                   padding: const EdgeInsets.only(
                       left: 10.0, right: 10.0, bottom: 20.0, top: 50.0),
                   child: TextFormField(
-                    obscureText: _obscureText,
+                    obscureText: _obscureText1,
                     decoration: InputDecoration(
+                      isDense: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      hintText: 'Current Password',
+                      labelText: 'Current Password',
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide(color: lightPurple, width: 2.0),
+                      ),
+                      labelStyle: TextStyle(color: defaultUIColor),
+                      prefixIcon: Icon(
+                        Icons.vpn_key,
+                        color: defaultUIColor,
+                      ),
+                      prefixText: '  ',
+                      suffixIcon: GestureDetector(
+                        child: _obscureText1
+                            ? Icon(
+                                Icons.visibility,
+                                size: 20.0,
+                                color: defaultUIColor,
+                              )
+                            : Icon(
+                                Icons.visibility_off,
+                                size: 20.0,
+                                color: defaultUIColor,
+                              ),
+                        onTap: () {
+                          setState(() {
+                            _obscureText1 = !_obscureText1;
+                          });
+                        },
+                      ),
+                    ),
+                    controller: currentPasswordController,
+                    validator: validateCurrentPassword,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10.0, right: 10.0, bottom: 20.0, top: 0.0),
+                  child: TextFormField(
+                    obscureText: _obscureText2,
+                    decoration: InputDecoration(
+                      isDense: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
@@ -168,7 +254,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       prefixText: '  ',
                       suffixIcon: GestureDetector(
-                        child: _obscureText
+                        child: _obscureText2
                             ? Icon(
                                 Icons.visibility,
                                 size: 20.0,
@@ -181,7 +267,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                               ),
                         onTap: () {
                           setState(() {
-                            _obscureText = !_obscureText;
+                            _obscureText2 = !_obscureText2;
                           });
                         },
                       ),

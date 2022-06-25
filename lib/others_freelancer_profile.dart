@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/chat_screen.dart';
 import 'package:ree_gig/freelancer_reviews.dart';
 import 'package:ree_gig/project_constants.dart';
@@ -42,6 +43,24 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
   }
 
   String _profileImage = '';
+
+  saveFavourite() async {
+    await FirebaseFirestore.instance
+        .collection('$currentUserEmail Favourite')
+        .add({
+      'userName': widget.userName,
+      'userEmail': widget.userEmail,
+      'requestCategory': widget.requestCategory,
+      'userProfileUrl': widget.userProfileUrl,
+    });
+    await Fluttertoast.showToast(
+      msg: 'Added to Favourite Successfully', // message
+      toastLength: Toast.LENGTH_SHORT, // length
+      gravity: ToastGravity.BOTTOM, // location
+      backgroundColor: Colors.green,
+    );
+  }
+
   fetch() async {
     print('-------------------------------------');
     print('Current user data is fetching');
@@ -88,6 +107,48 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
               ],
             ),
           ),
+          actions: [
+            currentUserEmail.toString() == widget.userEmail
+                ? Container()
+                : IconButton(
+                    onPressed: () {
+                      showMenu(
+                        context: context,
+                        position: const RelativeRect.fromLTRB(100, 0, 0, 100),
+                        items: [
+                          PopupMenuItem<String>(
+                            child: GestureDetector(
+                              child: const Text('Start Chat'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      name: widget.userName,
+                                      receiverEmail: widget.userEmail,
+                                      imagePath: _profileImage,
+                                      isChartHistorySave: true,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            value: '',
+                          ),
+                          PopupMenuItem<String>(
+                            child: const Text('Add to Favorite'),
+                            value: '',
+                            onTap: () async {
+                              await saveFavourite();
+                            },
+                          ),
+                        ],
+                        elevation: 8.0,
+                      );
+                    },
+                    icon: Icon(Icons.more_vert, color: whiteColor, size: 20),
+                  ),
+          ],
           bottom: PreferredSize(
             preferredSize: const Size(180.0, 180.0),
             child: Column(
@@ -135,52 +196,6 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (currentUserEmail.toString() ==
-                                  widget.userEmail) {
-                                print(
-                                    '$currentUserEmail is now login you cannot send massage to itself');
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatScreen(
-                                      name: widget.userName,
-                                      receiverEmail: widget.userEmail,
-                                      imagePath: _profileImage,
-                                      isChartHistorySave: true,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: currentUserEmail.toString() ==
-                                      widget.userEmail
-                                  ? const Text('')
-                                  : Text.rich(
-                                      TextSpan(
-                                        text: '',
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                        ), // default text style
-                                        children: <TextSpan>[
-                                          const TextSpan(
-                                              text: 'Start Chat with ',
-                                              style: TextStyle(
-                                                  fontStyle: FontStyle.italic)),
-                                          TextSpan(
-                                              text: '${widget.userName}',
-                                              style: TextStyle(
-                                                  backgroundColor: lightPink,
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      ),
-                                    ),
-                            ),
-                          ),
                           Text.rich(
                             TextSpan(
                               text: '',
@@ -203,58 +218,62 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Material(
-                              color: _isFollowButtonPressed
-                                  ? Colors.black
-                                  : lightPurple,
-                              clipBehavior: Clip.antiAlias,
-                              elevation: 2.0,
-                              borderRadius: BorderRadius.circular(30.0),
-                              child: MaterialButton(
-                                minWidth: 150.0,
-                                height: 25.0,
-                                elevation: 2.0,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                onPressed: () {
-                                  setState(() {
-                                    _isFollowButtonPressed =
-                                        !_isFollowButtonPressed;
-                                    if (_isFollowButtonPressed == true) {
-                                      print(stringFollowers);
-                                      int foll = int.parse(stringFollowers);
+                          currentUserEmail.toString() == widget.userEmail
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Material(
+                                    color: _isFollowButtonPressed
+                                        ? Colors.black
+                                        : lightPurple,
+                                    clipBehavior: Clip.antiAlias,
+                                    elevation: 2.0,
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    child: MaterialButton(
+                                      minWidth: 150.0,
+                                      height: 25.0,
+                                      elevation: 2.0,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isFollowButtonPressed =
+                                              !_isFollowButtonPressed;
+                                          if (_isFollowButtonPressed == true) {
+                                            print(stringFollowers);
+                                            int foll =
+                                                int.parse(stringFollowers);
 
-                                      setState(() {
-                                        foll = foll + 1;
-                                        stringFollowers = foll.toString();
-                                      });
-                                      print(stringFollowers);
-                                    } else if (_isFollowButtonPressed ==
-                                        false) {
-                                      print(stringFollowers);
-                                      int foll = int.parse(stringFollowers);
+                                            setState(() {
+                                              foll = foll + 1;
+                                              stringFollowers = foll.toString();
+                                            });
+                                            print(stringFollowers);
+                                          } else if (_isFollowButtonPressed ==
+                                              false) {
+                                            print(stringFollowers);
+                                            int foll =
+                                                int.parse(stringFollowers);
 
-                                      setState(() {
-                                        foll = foll - 1;
-                                        stringFollowers = foll.toString();
-                                      });
-                                      print(stringFollowers);
-                                    }
-                                  });
-                                },
-                                child: Text(
-                                  _isFollowButtonPressed
-                                      ? 'UnFollow'
-                                      : 'Follow',
-                                  style: TextStyle(
-                                    color: whiteColor,
+                                            setState(() {
+                                              foll = foll - 1;
+                                              stringFollowers = foll.toString();
+                                            });
+                                            print(stringFollowers);
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        _isFollowButtonPressed
+                                            ? 'UnFollow'
+                                            : 'Follow',
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -352,8 +371,7 @@ class OtherFreelancersRequestsAndAids extends StatelessWidget {
                         ? const Text('No dItem Find')
                         : Container(),
                     for (int i = 0; i < storeRequests.length; i++) ...[
-                      storeRequests[i]['Selected Category'] ==
-                                  requestCategory &&
+                      requestCategory == 'Special Category' &&
                               storeRequests[i]['User Email'] == userEmail
                           ? CustomContainer2(
                               userName: storeRequests[i]['User Name'],
@@ -371,7 +389,27 @@ class OtherFreelancersRequestsAndAids extends StatelessWidget {
                               innerBorder: 20.0,
                               smallBoxWidth: 110,
                               smallBoxHeight: 80)
-                          : Container(),
+                          : storeRequests[i]['Selected Category'] ==
+                                      requestCategory &&
+                                  storeRequests[i]['User Email'] == userEmail
+                              ? CustomContainer2(
+                                  userName: storeRequests[i]['User Name'],
+                                  userEmail: storeRequests[i]['User Email'],
+                                  userProfileUrl: storeRequests[i]
+                                      ['Profile Image URL'],
+                                  requestCategory: storeRequests[i]
+                                      ['Selected Category'],
+                                  title: storeRequests[i]['Request Title'],
+                                  description: storeRequests[i]
+                                      ['Request Description'],
+                                  imagePath: storeRequests[i]
+                                      ['Request Image URL'],
+                                  imageType: 'Network',
+                                  location: storeRequests[i]['Current Address'],
+                                  innerBorder: 20.0,
+                                  smallBoxWidth: 110,
+                                  smallBoxHeight: 80)
+                              : Container(),
                     ],
                   ],
                 );

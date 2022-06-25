@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ree_gig/home_screen_options.dart';
+import 'package:ree_gig/others_freelancer_profile.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 import 'package:ree_gig/request_screen.dart';
+import 'package:ree_gig/saved_searches.dart';
+import 'package:ree_gig/search_by_name.dart';
 
 List<String> searchItems = [
   'Admin',
@@ -24,6 +29,7 @@ List<String> searchItems = [
 ];
 
 List<String> matchQuery = [];
+List<Widget> widgetList = [];
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -34,6 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   bool _isVisibleBottomNavigation = false;
+
   readUserMode() async {
     var _value = await readMode();
     print('--------------------------');
@@ -51,6 +58,10 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     });
   }
+
+  String personName = '';
+  String imageURL = '';
+  String search = '';
 
   @override
   void initState() {
@@ -82,13 +93,6 @@ class _SearchScreenState extends State<SearchScreen> {
               _searchController.clear();
               Navigator.pop(context);
             }),
-//        actions: [
-//          IconButton(
-//              onPressed: () {
-//                showSearch(context: context, delegate: CustomSearchDelegate());
-//              },
-//              icon: Icon(Icons.search))
-//        ],
       ),
       body: Stack(
         children: [
@@ -159,85 +163,106 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Container(
-                            width: 130,
-                            height: 80,
-                            child: Center(
-                              child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    const Text(
-                                      'Other Users',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Stack(
-                                          children: const [
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 5.0),
-                                              child: CircleAvatar(
-                                                radius: 20,
-                                                backgroundColor: Colors.red,
+                          GestureDetector(
+                            child: Container(
+                              width: 130,
+                              height: 80,
+                              child: Center(
+                                child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      const Text(
+                                        'Other Users',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Stack(
+                                            children: const [
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 5.0),
+                                                child: CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundColor: Colors.red,
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 20.0),
-                                              child: CircleAvatar(
-                                                radius: 20,
-                                                backgroundColor: Colors.yellow,
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 20.0),
+                                                child: CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundColor:
+                                                      Colors.yellow,
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 35.0),
-                                              child: CircleAvatar(radius: 20),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 85.0, top: 10.0),
-                                              child: Text(
-                                                'More',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 35.0),
+                                                child: CircleAvatar(radius: 20),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 85.0, top: 10.0),
+                                                child: Text(
+                                                  'More',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ]),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffcd87d6),
+                                  borderRadius: BorderRadius.circular(20)),
                             ),
-                            decoration: BoxDecoration(
-                                color: const Color(0xffcd87d6),
-                                borderRadius: BorderRadius.circular(20)),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SearchByName(),
+                                ),
+                              );
+                            },
                           ),
-                          Container(
-                            width: 130,
-                            height: 80,
-                            child: Center(
-                              child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: const [
-                                    Icon(Icons.star),
-                                    Text(
-                                      'Saved Searches',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ]),
+                          GestureDetector(
+                            child: Container(
+                              width: 130,
+                              height: 80,
+                              child: Center(
+                                child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: const [
+                                      Icon(Icons.star),
+                                      Text(
+                                        'Saved Searches',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ]),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffcd87d6),
+                                  borderRadius: BorderRadius.circular(20)),
                             ),
-                            decoration: BoxDecoration(
-                                color: const Color(0xffcd87d6),
-                                borderRadius: BorderRadius.circular(20)),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SavedSearches(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -290,6 +315,21 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void searchQuery(String query) {
+    final suggessions = searchItems.where(
+      (element) {
+        final title = element.toLowerCase();
+        final input = query.toLowerCase();
+
+        return title.contains(input);
+      },
+    ).toList();
+
+    setState(() {
+      matchQuery = suggessions;
+    });
+  }
+
+  void searchQueryByName(String query) {
     final suggessions = searchItems.where(
       (element) {
         final title = element.toLowerCase();
