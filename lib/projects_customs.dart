@@ -358,6 +358,20 @@ class _CustomContainer2State extends State<CustomContainer2> {
     print(widget.description.length);
     return GestureDetector(
       onTap: () {},
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            content: FittedBox(
+              fit: BoxFit.fill,
+              clipBehavior: Clip.antiAlias,
+              child: Image.network(widget.imagePath),
+            ),
+          ),
+        );
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Container(

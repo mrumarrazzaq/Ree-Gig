@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ree_gig/others_freelancer_profile.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 
@@ -96,27 +97,42 @@ class _ChatScreenState extends State<ChatScreen> {
               height: 120,
               child: Padding(
                 padding: const EdgeInsets.only(top: 10.0),
-                child: ListTile(
-                  leading: widget.imagePath != ''
-                      ? CircleAvatar(
-                          radius: 30.0,
-                          backgroundImage: NetworkImage(widget.imagePath),
-                          backgroundColor: lightPurple.withOpacity(0.4),
-                        )
-                      : CircleAvatar(
-                          radius: 30.0,
-                          foregroundImage:
-                              const AssetImage('icons/default_profile.png'),
-                          backgroundColor: lightPurple.withOpacity(0.4),
-                        ),
-                  title: Text(widget.name,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: whiteColor)),
-                  dense: true,
-                  subtitle: Text('online', style: TextStyle(color: whiteColor)),
-                  trailing: IconButton(
-                      icon: Icon(Icons.call, color: whiteColor),
-                      onPressed: () {}),
+                child: GestureDetector(
+                  child: ListTile(
+                    leading: widget.imagePath != ''
+                        ? CircleAvatar(
+                            radius: 30.0,
+                            backgroundImage: NetworkImage(widget.imagePath),
+                            backgroundColor: lightPurple.withOpacity(0.4),
+                          )
+                        : CircleAvatar(
+                            radius: 30.0,
+                            foregroundImage:
+                                const AssetImage('icons/default_profile.png'),
+                            backgroundColor: lightPurple.withOpacity(0.4),
+                          ),
+                    title: Text(widget.name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: whiteColor)),
+                    dense: true,
+                    subtitle:
+                        Text('online', style: TextStyle(color: whiteColor)),
+                    trailing: IconButton(
+                        icon: Icon(Icons.call, color: whiteColor),
+                        onPressed: () {}),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FreelancerProfileScreen(
+                            userName: widget.name,
+                            userEmail: widget.receiverEmail,
+                            userProfileUrl: widget.imagePath,
+                            requestCategory: 'Special Category',
+                          ),
+                        ));
+                  },
                 ),
               )),
           Align(

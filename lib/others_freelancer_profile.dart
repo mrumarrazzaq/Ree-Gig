@@ -108,174 +108,252 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
             ),
           ),
           actions: [
-            currentUserEmail.toString() == widget.userEmail
-                ? Container()
-                : IconButton(
-                    onPressed: () {
-                      showMenu(
-                        context: context,
-                        position: const RelativeRect.fromLTRB(100, 0, 0, 100),
-                        items: [
-                          PopupMenuItem<String>(
-                            child: GestureDetector(
-                              child: const Text('Start Chat'),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatScreen(
-                                      name: widget.userName,
-                                      receiverEmail: widget.userEmail,
-                                      imagePath: _profileImage,
-                                      isChartHistorySave: true,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            value: '',
-                          ),
-                          PopupMenuItem<String>(
-                            child: const Text('Add to Favorite'),
-                            value: '',
-                            onTap: () async {
-                              await saveFavourite();
-                            },
-                          ),
-                        ],
-                        elevation: 8.0,
-                      );
-                    },
-                    icon: Icon(Icons.more_vert, color: whiteColor, size: 20),
-                  ),
+            // currentUserEmail.toString() == widget.userEmail
+            //     ? Container()
+            //     : IconButton(
+            //         onPressed: () {
+            //           showMenu(
+            //             context: context,
+            //             position: const RelativeRect.fromLTRB(100, 0, 0, 100),
+            //             items: [
+            //               PopupMenuItem<String>(
+            //                 child: GestureDetector(
+            //                   child: const Text('Start Chat'),
+            //                   onTap: () {
+            //                     Navigator.push(
+            //                       context,
+            //                       MaterialPageRoute(
+            //                         builder: (context) => ChatScreen(
+            //                           name: widget.userName,
+            //                           receiverEmail: widget.userEmail,
+            //                           imagePath: _profileImage,
+            //                           isChartHistorySave: true,
+            //                         ),
+            //                       ),
+            //                     );
+            //                   },
+            //                 ),
+            //                 value: '',
+            //               ),
+            //               PopupMenuItem<String>(
+            //                 child: const Text('Add to Favorite'),
+            //                 value: '',
+            //                 onTap: () async {
+            //                   await saveFavourite();
+            //                 },
+            //               ),
+            //             ],
+            //             elevation: 8.0,
+            //           );
+            //         },
+            //         icon: Icon(Icons.more_vert, color: whiteColor, size: 20),
+            //       ),
+            // currentUserEmail.toString() == widget.userEmail
+            //     ? Container()
+            //     : IconButton(
+            //         onPressed: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => ChatScreen(
+            //                 name: widget.userName,
+            //                 receiverEmail: widget.userEmail,
+            //                 imagePath: _profileImage,
+            //                 isChartHistorySave: true,
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //         icon: const Icon(Icons.wechat_outlined)),
+            // currentUserEmail.toString() == widget.userEmail
+            //     ? Container()
+            //     : IconButton(
+            //         onPressed: () async {
+            //           await saveFavourite();
+            //         },
+            //         icon: const Icon(Icons.star)),
           ],
           bottom: PreferredSize(
             preferredSize: const Size(180.0, 180.0),
             child: Column(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Stack(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        if (currentUserEmail.toString() == widget.userEmail) {
-                          print(
-                              '$currentUserEmail is now login you cannot send massage to itself');
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatScreen(
-                                name: widget.userName,
-                                receiverEmail: widget.userEmail,
-                                imagePath: _profileImage,
-                                isChartHistorySave: true,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 14.0),
-                        child: _profileImage == ''
-                            ? CircleAvatar(
-                                foregroundImage: const AssetImage(
-                                  'icons/default_profile.png',
-                                ),
-                                backgroundColor: lightPurple,
-                                radius: 30,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(_profileImage),
-                                backgroundColor: lightPurple.withOpacity(0.5),
-                                radius: 30),
+                    Positioned.fill(
+                      right: 50.0,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Column(
+                          children: [
+                            currentUserEmail.toString() == widget.userEmail
+                                ? Container()
+                                : IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ChatScreen(
+                                            name: widget.userName,
+                                            receiverEmail: widget.userEmail,
+                                            imagePath: _profileImage,
+                                            isChartHistorySave: true,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.wechat_outlined,
+                                      color: whiteColor,
+                                      size: 40,
+                                    )),
+                            currentUserEmail.toString() == widget.userEmail
+                                ? Container()
+                                : IconButton(
+                                    onPressed: () async {
+                                      await saveFavourite();
+                                    },
+                                    icon: Icon(
+                                      Icons.star,
+                                      color: whiteColor,
+                                      size: 40,
+                                    )),
+                          ],
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text.rich(
-                            TextSpan(
-                              text: '',
-                              style: TextStyle(
-                                color: whiteColor,
-                              ), // default text style
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text: '${widget.userEmail} \n',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: '$stringFollowers Follwers\n',
-                                    style: const TextStyle(
-                                        fontStyle: FontStyle.italic)),
-                                TextSpan(
-                                    text: '$stringFollowings Following',
-                                    style: const TextStyle(
-                                        fontStyle: FontStyle.italic)),
-                              ],
-                            ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (currentUserEmail.toString() ==
+                                widget.userEmail) {
+                              print(
+                                  '$currentUserEmail is now login you cannot send massage to itself');
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatScreen(
+                                    name: widget.userName,
+                                    receiverEmail: widget.userEmail,
+                                    imagePath: _profileImage,
+                                    isChartHistorySave: true,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 14.0),
+                            child: _profileImage == ''
+                                ? CircleAvatar(
+                                    foregroundImage: const AssetImage(
+                                      'icons/default_profile.png',
+                                    ),
+                                    backgroundColor: lightPurple,
+                                    radius: 30,
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(_profileImage),
+                                    backgroundColor:
+                                        lightPurple.withOpacity(0.5),
+                                    radius: 30),
                           ),
-                          currentUserEmail.toString() == widget.userEmail
-                              ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Material(
-                                    color: _isFollowButtonPressed
-                                        ? Colors.black
-                                        : lightPurple,
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 2.0,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    child: MaterialButton(
-                                      minWidth: 150.0,
-                                      height: 25.0,
-                                      elevation: 2.0,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0),
-                                      onPressed: () {
-                                        setState(() {
-                                          _isFollowButtonPressed =
-                                              !_isFollowButtonPressed;
-                                          if (_isFollowButtonPressed == true) {
-                                            print(stringFollowers);
-                                            int foll =
-                                                int.parse(stringFollowers);
-
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text.rich(
+                                TextSpan(
+                                  text: '',
+                                  style: TextStyle(
+                                    color: whiteColor,
+                                  ), // default text style
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: '${widget.userEmail} \n',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis)),
+                                    TextSpan(
+                                        text: '$stringFollowers Follwers\n',
+                                        style: const TextStyle(
+                                            fontStyle: FontStyle.italic)),
+                                    TextSpan(
+                                        text: '$stringFollowings Following',
+                                        style: const TextStyle(
+                                            fontStyle: FontStyle.italic)),
+                                  ],
+                                ),
+                              ),
+                              currentUserEmail.toString() == widget.userEmail
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Material(
+                                        color: _isFollowButtonPressed
+                                            ? Colors.black
+                                            : lightPurple,
+                                        clipBehavior: Clip.antiAlias,
+                                        elevation: 2.0,
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        child: MaterialButton(
+                                          minWidth: 150.0,
+                                          height: 25.0,
+                                          elevation: 2.0,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          onPressed: () {
                                             setState(() {
-                                              foll = foll + 1;
-                                              stringFollowers = foll.toString();
-                                            });
-                                            print(stringFollowers);
-                                          } else if (_isFollowButtonPressed ==
-                                              false) {
-                                            print(stringFollowers);
-                                            int foll =
-                                                int.parse(stringFollowers);
+                                              _isFollowButtonPressed =
+                                                  !_isFollowButtonPressed;
+                                              if (_isFollowButtonPressed ==
+                                                  true) {
+                                                print(stringFollowers);
+                                                int foll =
+                                                    int.parse(stringFollowers);
 
-                                            setState(() {
-                                              foll = foll - 1;
-                                              stringFollowers = foll.toString();
+                                                setState(() {
+                                                  foll = foll + 1;
+                                                  stringFollowers =
+                                                      foll.toString();
+                                                });
+                                                print(stringFollowers);
+                                              } else if (_isFollowButtonPressed ==
+                                                  false) {
+                                                print(stringFollowers);
+                                                int foll =
+                                                    int.parse(stringFollowers);
+
+                                                setState(() {
+                                                  foll = foll - 1;
+                                                  stringFollowers =
+                                                      foll.toString();
+                                                });
+                                                print(stringFollowers);
+                                              }
                                             });
-                                            print(stringFollowers);
-                                          }
-                                        });
-                                      },
-                                      child: Text(
-                                        _isFollowButtonPressed
-                                            ? 'UnFollow'
-                                            : 'Follow',
-                                        style: TextStyle(
-                                          color: whiteColor,
+                                          },
+                                          child: Text(
+                                            _isFollowButtonPressed
+                                                ? 'UnFollow'
+                                                : 'Follow',
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                        ],
-                      ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -323,8 +401,10 @@ class OtherFreelancersRequestsAndAids extends StatelessWidget {
       {Key? key, required this.requestCategory, required this.userEmail})
       : super(key: key);
 
-  final Stream<QuerySnapshot> _dailyUpdated =
-      FirebaseFirestore.instance.collection('Requests').snapshots();
+  final Stream<QuerySnapshot> _dailyUpdated = FirebaseFirestore.instance
+      .collection('Requests')
+      .orderBy('Created AT', descending: true)
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {

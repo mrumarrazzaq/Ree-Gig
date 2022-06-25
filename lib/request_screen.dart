@@ -220,7 +220,7 @@ class _RequestScreenState extends State<RequestScreen> {
   Future<void> addCurrentUserRequest(String location) {
     return currentUserRequest
         .add({
-          'Created AT': currentDateTime,
+          'Created AT': DateTime.now(),
           'User Email': currentUserEmail.toString(),
           'User Name': _personName,
           'Profile Image URL': _profileImageURL,
