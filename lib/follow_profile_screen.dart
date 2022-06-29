@@ -208,6 +208,7 @@ class _FollowProfileScreenState extends State<FollowProfileScreen> {
 class FreelancerProfileRequestsAndAids extends StatelessWidget {
   final Stream<QuerySnapshot> _dailyUpdated = FirebaseFirestore.instance
       .collection('$currentUserEmail Requests')
+      .orderBy('Created AT', descending: true)
       .snapshots();
 
   @override
@@ -267,7 +268,7 @@ class FreelancerProfileRequestsAndAids extends StatelessWidget {
                           userProfileUrl: storeRequests[i]['Profile Image URL'],
                           requestCategory: storeRequests[i]
                               ['Selected Category'],
-                          title: storeRequests[i]['User Name'],
+                          title: storeRequests[i]['Request Title'],
                           description: storeRequests[i]['Request Description'],
                           imagePath: storeRequests[i]['Request Image URL'],
                           imageType: 'Network',

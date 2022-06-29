@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ree_gig/others_freelancer_profile.dart';
@@ -71,7 +73,7 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
                         imagePath: storeRequests[i]['Request Image URL'],
                         location: storeRequests[i]['Current Address'],
                         imageType: 'Network',
-                        dateTime: storeRequests[i]['Created AT'],
+                        timeStamp: storeRequests[i]['Created AT'],
                       )
                     : Container(),
               ],
@@ -93,7 +95,7 @@ class CustomPoster extends StatelessWidget {
     required this.imageType,
     required this.description,
     required this.location,
-    required this.dateTime,
+    required this.timeStamp,
   }) : super(key: key);
   String name;
   String email;
@@ -104,11 +106,67 @@ class CustomPoster extends StatelessWidget {
   String description;
   String imageType;
   String location;
-  Timestamp dateTime;
+  Timestamp timeStamp;
   @override
   Widget build(BuildContext context) {
-    DateTime dt = dateTime.toDate();
+    String howManyAgo = 'error';
+    int what = 0;
+    DateTime dt = timeStamp.toDate();
+    DateTime now = DateTime.now();
+    int year = dt.year;
+    int month = dt.month;
+    int day = dt.day;
+    int hr = dt.hour;
+    // if (hr > 12) {
+    //   hr = hr - 12;
+    // }
+    int min = dt.minute;
+    int sec = dt.second;
+    int nowYear = now.year;
+    int nowMonth = now.month;
+    int nowDay = now.day;
+    int nowHr = now.hour;
+    int nowMin = now.minute;
+    int nowSec = now.second;
 
+    int newSec = nowSec - sec;
+    int newMin = nowMin - min;
+    int newHr = nowHr - hr;
+    int newDay = nowDay - day;
+    int newMonth = nowMonth - month;
+    int newYear = nowYear - year;
+    print('--------Recommended for you-------');
+    print(now);
+    print(dt);
+    print(requestTitle);
+    print('newSec $newSec');
+    print('newMin $newMin');
+    print('newHr $newHr');
+    print('newDay $newDay');
+    print('newMonth $newMonth');
+    print('newYear $newYear');
+
+    if (newMin == 0 && (newSec >= 0 || newSec < 60) && newSec > 0) {
+      howManyAgo = 'sec ago';
+      what = newSec;
+    } else if (newHr == 0 && (newMin >= 0 || newMin < 60) && newMin > 0) {
+      howManyAgo = 'min ago';
+      what = newMin;
+    } else if (newDay == 0 && (newHr >= 1 || newHr <= 24) && newHr > 0) {
+      howManyAgo = 'hr ago';
+      what = newHr;
+    } else if (newMonth == 0 && (newDay >= 1 || newDay <= 31) && newDay > 0) {
+      howManyAgo = 'day ago';
+      what = newDay;
+    } else if (newYear == 0 &&
+        (newMonth >= 1 || newMonth <= 12) &&
+        newMonth > 0) {
+      howManyAgo = 'mo ago';
+      what = newMonth;
+    } else if (newYear != 0) {
+      howManyAgo = 'yr ago';
+      what = newYear;
+    }
     return GestureDetector(
       onTap: () {
         print('url-----------------');
@@ -186,7 +244,8 @@ class CustomPoster extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                         child: Text(
-                          '${dt.hour.toString()} hr ago',
+                          // '${dt.hour.toString()} hr ago'
+                          '$what $howManyAgo',
                           style: TextStyle(
                             color: whiteColor,
                             backgroundColor: lightPurple,

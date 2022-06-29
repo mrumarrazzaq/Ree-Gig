@@ -134,7 +134,7 @@ class _CustomContainer1State extends State<CustomContainer1> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 50) {
+      if (_length <= 60) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;
