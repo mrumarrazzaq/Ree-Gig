@@ -3,6 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:ree_gig/others_freelancer_profile.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_4.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({
@@ -209,26 +221,70 @@ class _ChatScreenState extends State<ChatScreen> {
                                             currentUserEmail &&
                                         storedMassages[i]['Receiver Email'] ==
                                             widget.receiverEmail
-                                    ? RightBubble(
-//                                            MediaQuery.of(context).size.width -
-//                                                80.0,
-                                        message: storedMassages[i]['message'],
+                                    ? ChatBubble(
+                                        clipper: ChatBubbleClipper5(
+                                            type: BubbleType.sendBubble),
+                                        alignment: Alignment.topRight,
+                                        margin: const EdgeInsets.only(
+                                            top: 15, right: 10),
+                                        backGroundColor:
+                                            Colors.green.withOpacity(0.4),
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.7,
+                                          ),
+                                          child: Text(
+                                            storedMassages[i]['message'],
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ),
+                                        ),
                                       )
+//                                 RightBubble(
+// //                                            MediaQuery.of(context).size.width -
+// //                                                80.0,
+//                                         message: storedMassages[i]['message'],
+//                                       )
                                     : storedMassages[i]['Sender Email'] ==
                                                 widget.receiverEmail &&
                                             storedMassages[i]
                                                     ['Receiver Email'] ==
                                                 currentUserEmail
-                                        ? LeftBubble(
-                                            imagePath: widget.imagePath,
-
-//                          MediaQuery.of(context)
-//                                                    .size
-//                                                    .width -
-//                                                100.0,
-                                            message: storedMassages[i]
-                                                ['message'],
+                                        ? ChatBubble(
+                                            clipper: ChatBubbleClipper5(
+                                                type:
+                                                    BubbleType.receiverBubble),
+                                            backGroundColor: Colors.purpleAccent
+                                                .withOpacity(0.4),
+                                            margin: const EdgeInsets.only(
+                                                top: 15, left: 10),
+                                            child: Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.7,
+                                              ),
+                                              child: Text(
+                                                storedMassages[i]['message'],
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                            ),
                                           )
+//                                 LeftBubble(
+//                                             imagePath: widget.imagePath,
+//
+// //                          MediaQuery.of(context)
+// //                                                    .size
+// //                                                    .width -
+// //                                                100.0,
+//                                             message: storedMassages[i]
+//                                                 ['message'],
+//                                           )
                                         : Container(),
                               ],
                             ],
