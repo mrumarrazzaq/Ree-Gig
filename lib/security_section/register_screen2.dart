@@ -96,6 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'email': emailController.text,
           'password': passwordController.text,
           'imageUrl': imageURL,
+          'User Current Status': 'online',
           'follwers': 0,
           'followings': 0,
         };

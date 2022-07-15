@@ -5,16 +5,7 @@ import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_4.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({
@@ -36,15 +27,16 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance;
   TextEditingController _massageController = TextEditingController();
-  saveMassages(String time) async {
+  var message;
+  saveMassages(String time, String massage) async {
     await FirebaseFirestore.instance.collection('Chats').add({
-      'message': _massageController.text,
+      'message': massage,
       'Sender Email': currentUserEmail.toString(),
       'Receiver Email': widget.receiverEmail,
       'Created At': DateTime.now(),
       'Time': time,
     });
-    _massageController.clear();
+
     print('-------------------------');
     print('Massage Send Successfully');
     print('-------------------------');
@@ -127,8 +119,41 @@ class _ChatScreenState extends State<ChatScreen> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: whiteColor)),
                     dense: true,
-                    subtitle:
-                        Text('online', style: TextStyle(color: whiteColor)),
+                    subtitle: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('User Data')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print('Something went wrong');
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                                child: CircularProgressIndicator(
+                              color: lightPurple,
+                              strokeWidth: 2.0,
+                            ));
+                          }
+
+                          final List storedMassages = [];
+
+                          snapshot.data!.docs.map((DocumentSnapshot document) {
+                            Map id = document.data() as Map<String, dynamic>;
+                            if (widget.receiverEmail == document.id) {
+                              print(document.id);
+                              storedMassages.add(id);
+                              id['id'] = document.id;
+                            }
+                          }).toList();
+
+                          return Text(storedMassages[0]['User Current Status'],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: whiteColor));
+                        }),
+                    // Text('online', style: TextStyle(color: whiteColor)),
                     trailing: IconButton(
                         icon: Icon(Icons.call, color: whiteColor),
                         onPressed: () {}),
@@ -192,12 +217,7 @@ class _ChatScreenState extends State<ChatScreen> {
 //                  print('Document id : ${document.id}');
                             id['id'] = document.id;
                           }).toList();
-                          // storedMassages.reversed;
-//                          for (int i = 0; i < storedMassages.length; i++) {
-//                            _senderEmail = storedMassages[i]['Sender Email'];
-//                            _receiverEmail =
-//                                storedMassages[i]['Receiver Email'];
-//                          }
+
                           return Column(
 //                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -224,11 +244,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ? ChatBubble(
                                         clipper: ChatBubbleClipper5(
                                             type: BubbleType.sendBubble),
+                                        shadowColor: Colors.transparent,
                                         alignment: Alignment.topRight,
                                         margin: const EdgeInsets.only(
                                             top: 15, right: 10),
-                                        backGroundColor:
-                                            Colors.green.withOpacity(0.4),
+                                        backGroundColor: Colors.green[300],
                                         child: Container(
                                           constraints: BoxConstraints(
                                             maxWidth: MediaQuery.of(context)
@@ -257,8 +277,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                             clipper: ChatBubbleClipper5(
                                                 type:
                                                     BubbleType.receiverBubble),
-                                            backGroundColor: Colors.purpleAccent
-                                                .withOpacity(0.4),
+                                            shadowColor: Colors.transparent,
+                                            backGroundColor:
+                                                lightPurple.withOpacity(0.5),
                                             margin: const EdgeInsets.only(
                                                 top: 15, left: 10),
                                             child: Container(
@@ -334,15 +355,15 @@ class _ChatScreenState extends State<ChatScreen> {
                       if (currentDateTime.hour > 12) {
                         int hr = DateTime.now().hour - 12;
                         int min = DateTime.now().minute;
-                        int sec = DateTime.now().second;
-                        int milisec = DateTime.now().microsecond;
                         time = hr.toString() + ' : ' + min.toString() + ' PM';
                       } else {
                         int hr = DateTime.now().hour;
                         int min = DateTime.now().minute;
                         time = hr.toString() + ' : ' + min.toString() + ' AM';
                       }
-                      await saveMassages(time);
+                      message = _massageController.text;
+                      _massageController.clear();
+                      await saveMassages(time, message);
                     }
                   },
                 ),

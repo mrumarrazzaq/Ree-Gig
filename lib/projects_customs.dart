@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/chat_screen.dart';
 import 'package:ree_gig/follow_profile_screen.dart';
 import 'package:ree_gig/others_freelancer_profile.dart';
+import 'package:ree_gig/post_details.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/recent_chats.dart';
 import 'package:ree_gig/request_screen.dart';
@@ -341,6 +343,8 @@ class _CustomContainer2State extends State<CustomContainer2> {
   bool _reverseArrowDirection = false;
   int _length = 0;
   bool _isArrowVisible = true;
+  var isUserMode;
+  bool _isTure = true;
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
@@ -352,12 +356,50 @@ class _CustomContainer2State extends State<CustomContainer2> {
     });
   }
 
+  readFutureValue() async {
+    print('Reading Future Values');
+    var _mode = await readMode();
+    print('_mode : $_mode');
+    setState(() {
+      isUserMode = _mode;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isTure) {
+      readFutureValue();
+      setState(() {
+        _isTure = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     descriptionLength();
-    print(widget.description.length);
+    // print(widget.description.length);
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (isUserMode == false && currentUserEmail != widget.userEmail) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostDetail(
+                userName: widget.userName,
+                userEmail: widget.userEmail,
+                userProfileUrl: widget.userProfileUrl,
+                title: widget.title,
+                description: widget.description,
+                requestCategory: widget.requestCategory,
+                imagePath: widget.imagePath,
+                location: widget.location,
+              ),
+            ),
+          );
+        }
+      },
       onLongPress: () {
         showDialog(
           context: context,
@@ -639,6 +681,7 @@ class CustomRecentChatsTile extends StatelessWidget {
     required this.massage,
     required this.imagePath,
     required this.noOfMassages,
+    required this.currentStatus,
     required this.time,
   }) : super(key: key);
 
@@ -647,6 +690,7 @@ class CustomRecentChatsTile extends StatelessWidget {
   String massage;
   String imagePath;
   int noOfMassages;
+  String currentStatus;
   String time;
 
   @override
@@ -668,15 +712,43 @@ class CustomRecentChatsTile extends StatelessWidget {
         children: [
           ListTile(
             leading: imagePath != ''
-                ? CircleAvatar(
-                    radius: 30.0,
-                    backgroundImage: NetworkImage(imagePath),
+                ? Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage: NetworkImage(imagePath),
+                      ),
+                      Positioned(
+                        top: 40,
+                        left: 40,
+                        child: CircleAvatar(
+                          backgroundColor: currentStatus == 'Online'
+                              ? Colors.green
+                              : Colors.grey[600],
+                          radius: 6.5,
+                        ),
+                      ),
+                    ],
                   )
-                : CircleAvatar(
-                    radius: 30.0,
-                    backgroundImage:
-                        const AssetImage('icons/default_profile.png'),
-                    backgroundColor: lightPurple.withOpacity(0.4),
+                : Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage:
+                            const AssetImage('icons/default_profile.png'),
+                        backgroundColor: lightPurple.withOpacity(0.4),
+                      ),
+                      Positioned(
+                        top: 40,
+                        left: 40,
+                        child: CircleAvatar(
+                          backgroundColor: currentStatus == 'Online'
+                              ? Colors.green
+                              : Colors.grey[600],
+                          radius: 6.5,
+                        ),
+                      ),
+                    ],
                   ),
             title:
                 Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),

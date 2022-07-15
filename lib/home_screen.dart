@@ -19,7 +19,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   bool _isVisibleBottomNavigation = false;
 
   readUserMode() async {
@@ -42,33 +43,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-//    WidgetsBinding.instance!.addObserver(this);
-//    setStatus('Online');
+    WidgetsBinding.instance!.addObserver(this);
+    setUserStatus(status: 'Online');
     readUserMode();
     super.initState();
   }
 
-//  void setStatus(String status) async {
-//    await FirebaseFirestore.instance
-//        .collection('User Data')
-//        .doc(currentUserId)
-//        .update({
-//      'status': status,
-//    });
-//  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      //User Status online
+      setUserStatus(status: 'Online');
+    } else {
+      //User Status offLine
+      setUserStatus(status: 'Offline');
+    }
+  }
 
-//  @override
-//  void didChangeAppLifecycleState(AppLifecycleState state) {
-//    if (state == AppLifecycleState.resumed) {
-//      //online user
-//      setStatus('Online');
-//    } else {
-//      //offline user
-//      setStatus('Offline');
-//    }
-//
-//    super.didChangeAppLifecycleState(state);
-//  }
+  void setUserStatus({required String status}) async {
+    await _fireStore.collection('User Data').doc('$currentUserEmail').update({
+      'User Current Status': status,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

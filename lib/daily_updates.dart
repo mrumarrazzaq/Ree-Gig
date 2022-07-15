@@ -29,39 +29,45 @@ class _DailyUpdatesState extends State<DailyUpdates> {
               strokeWidth: 2.0,
             ));
           }
-          final List storeRequests = [];
+          if (snapshot.hasData) {
+            final List storeRequests = [];
 
-          snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map id = document.data() as Map<String, dynamic>;
-            storeRequests.add(id);
+            snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map id = document.data() as Map<String, dynamic>;
+              storeRequests.add(id);
 //            print('==============================================');
 //            print(storeRequests);
 //            print('Document id : ${document.id}');
-            id['id'] = document.id;
-          }).toList();
-
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              storeRequests.isEmpty
-                  ? const Text('No daily Update')
-                  : Container(),
-              for (int i = 0; i < storeRequests.length; i++) ...[
-                CustomPoster(
-                  name: storeRequests[i]['User Name'],
-                  email: storeRequests[i]['User Email'],
-                  url: storeRequests[i]['Profile Image URL'],
-                  category: storeRequests[i]['Selected Category'],
-                  requestTitle: storeRequests[i]['Request Title'],
-                  description: storeRequests[i]['Request Description'],
-                  imagePath: storeRequests[i]['Request Image URL'],
-                  location: storeRequests[i]['Current Address'],
-                  imageType: 'Network',
-                  timeStamp: storeRequests[i]['Created AT'],
-                ),
+              id['id'] = document.id;
+            }).toList();
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                storeRequests.isEmpty
+                    ? const Text('No daily Update')
+                    : Container(),
+                for (int i = 0; i < storeRequests.length; i++) ...[
+                  CustomPoster(
+                    name: storeRequests[i]['User Name'],
+                    email: storeRequests[i]['User Email'],
+                    url: storeRequests[i]['Profile Image URL'],
+                    category: storeRequests[i]['Selected Category'],
+                    requestTitle: storeRequests[i]['Request Title'],
+                    description: storeRequests[i]['Request Description'],
+                    imagePath: storeRequests[i]['Request Image URL'],
+                    location: storeRequests[i]['Current Address'],
+                    imageType: 'Network',
+                    timeStamp: storeRequests[i]['Created AT'],
+                  ),
+                ],
               ],
-            ],
-          );
+            );
+          }
+          return Center(
+              child: CircularProgressIndicator(
+            color: lightPurple,
+            strokeWidth: 2.0,
+          ));
         });
   }
 }
