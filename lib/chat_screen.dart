@@ -150,7 +150,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                           return Text(storedMassages[0]['User Current Status'],
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
                                   color: whiteColor));
                         }),
                     // Text('online', style: TextStyle(color: whiteColor)),

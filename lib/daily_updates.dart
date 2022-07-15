@@ -124,17 +124,6 @@ class CustomPoster extends StatelessWidget {
     int newMonth = nowMonth - month;
     int newYear = nowYear - year;
 
-    print('-------Daily--------');
-    print(now);
-    print(dt);
-    print(requestTitle);
-    print('newSec $newSec');
-    print('newMin $newMin');
-    print('newHr $newHr');
-    print('newDay $newDay');
-    print('newMonth $newMonth');
-    print('newYear $newYear');
-
     if (newMin == 0 && (newSec >= 0 || newSec < 60) && newSec > 0) {
       howManyAgo = 'sec ago';
       what = newSec;
