@@ -376,13 +376,11 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
         body: TabBarView(
           children: [
 //            //Requests
-            OtherFreelancersRequestsAndAids(
+            OtherFreelancersRequests(
                 userEmail: widget.userEmail,
                 requestCategory: widget.requestCategory),
             //Aids
-            OtherFreelancersRequestsAndAids(
-                userEmail: widget.userEmail,
-                requestCategory: widget.requestCategory),
+            FreelancerProfileAids(userEmail: widget.userEmail),
             //Reviews
             FreelancersReviews(email: widget.userEmail),
           ],
@@ -393,11 +391,11 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
   }
 }
 
-class OtherFreelancersRequestsAndAids extends StatelessWidget {
+class OtherFreelancersRequests extends StatelessWidget {
   final String userEmail;
   final String requestCategory;
 
-  OtherFreelancersRequestsAndAids(
+  OtherFreelancersRequests(
       {Key? key, required this.requestCategory, required this.userEmail})
       : super(key: key);
 
@@ -509,6 +507,96 @@ class OtherFreelancersRequestsAndAids extends StatelessWidget {
 //                            smallBoxHeight: 70),
 //                      ],
 //                    ),
+        ],
+      ),
+    );
+  }
+}
+
+class FreelancerProfileAids extends StatelessWidget {
+  FreelancerProfileAids({Key? key, required this.userEmail}) : super(key: key);
+  String userEmail;
+  // final Stream<QuerySnapshot> _sellerData = FirebaseFirestore.instance
+  //     .collection('Seller $userEmail')
+  //     .orderBy('Created AT', descending: true)
+  //     .snapshots();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          Container(
+            height: 8,
+            decoration: BoxDecoration(
+                color: darkPurple,
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0))),
+          ),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Seller $userEmail')
+                  .orderBy('Created AT', descending: true)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: lightPurple,
+                    strokeWidth: 2.0,
+                  ));
+                }
+                final List storeRequests = [];
+
+                snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map id = document.data() as Map<String, dynamic>;
+                  storeRequests.add(id);
+//                  print('==============================================');
+//                  print(storeRequests);
+//                  print('Document id : ${document.id}');
+                  id['id'] = document.id;
+                }).toList();
+                return Column(
+                  children: [
+                    storeRequests.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.only(top: 30.0),
+                            child: Text(
+                              'No Aids Find',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : Container(),
+                    for (int i = 0; i < storeRequests.length; i++) ...[
+                      storeRequests[i]['Is Job Complete'] == true
+                          ? CustomContainer3(
+                              userName: storeRequests[i]['Seller Name'],
+                              userEmail: storeRequests[i]
+                                  ['Request Seller Email'],
+                              userProfileUrl: storeRequests[i]
+                                  ['Profile Image URL'],
+                              requestCategory: storeRequests[i]
+                                  ['Request Category'],
+                              title: storeRequests[i]['Request Title'],
+                              description: storeRequests[i]
+                                  ['Request Description'],
+                              imagePath: storeRequests[i]['Request Image URL'],
+                              imageType: 'Network',
+                              location: storeRequests[i]['Current Address'],
+                              innerBorder: 20.0,
+                              smallBoxWidth: 110,
+                              smallBoxHeight: 80)
+                          : Container(),
+                    ],
+                  ],
+                );
+              }),
         ],
       ),
     );

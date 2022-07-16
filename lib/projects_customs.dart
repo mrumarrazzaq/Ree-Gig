@@ -546,6 +546,204 @@ class _CustomContainer2State extends State<CustomContainer2> {
   }
 }
 
+class CustomContainer3 extends StatefulWidget {
+  CustomContainer3({
+    Key? key,
+    required this.userName,
+    required this.userEmail,
+    required this.userProfileUrl,
+    required this.requestCategory,
+    required this.title,
+    required this.description,
+    required this.imagePath,
+    required this.innerBorder,
+    required this.smallBoxWidth,
+    required this.smallBoxHeight,
+    required this.location,
+    required this.imageType,
+  }) : super(key: key);
+  String userName;
+  String userEmail;
+  String userProfileUrl;
+  String requestCategory;
+  String title;
+  String description;
+  String imagePath;
+  double innerBorder;
+  double smallBoxWidth;
+  double smallBoxHeight;
+  String location;
+  String imageType;
+  @override
+  _CustomContainer3State createState() => _CustomContainer3State();
+}
+
+class _CustomContainer3State extends State<CustomContainer3> {
+  bool _reverseArrowDirection = false;
+  int _length = 0;
+  bool _isArrowVisible = true;
+  descriptionLength() {
+    setState(() {
+      _length = widget.description.length;
+      if (_length <= 60) {
+        _isArrowVisible = false;
+      } else {
+        _isArrowVisible = true;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    descriptionLength();
+    print(widget.description.length);
+    return GestureDetector(
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            content: FittedBox(
+              fit: BoxFit.fill,
+              child: Image.network(widget.imagePath),
+            ),
+          ),
+        );
+      },
+      onTap: () {},
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        child: Container(
+          decoration: BoxDecoration(
+              color: const Color(0xffdcd0d0),
+              borderRadius: BorderRadius.circular(20)),
+          child: Stack(children: [
+            Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 15.0, top: 8.0, bottom: 5.0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      widget.title,
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.clip,
+                      softWrap: true,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),
+                  child: Row(children: [
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.red[800],
+                      size: 18.0,
+                    ),
+                    Text(
+                      widget.location,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: 140.0, left: 15.0, bottom: 20.0),
+                  child: Text(
+                    widget.description,
+                    overflow: TextOverflow.fade,
+                    textAlign: TextAlign.justify,
+                    maxLines: maxLines,
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0, top: 10.0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  height: widget.smallBoxHeight,
+                  width: widget.smallBoxWidth,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(widget.innerBorder),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xff737373),
+                        blurRadius: 2.0,
+                        spreadRadius: 0.0,
+                        offset:
+                            Offset(2.0, 2.0), // shadow direction: bottom right
+                      )
+                    ],
+                  ),
+                  child: widget.imagePath == ''
+                      ? null
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: widget.imageType == 'Network'
+                              ? FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: Image.network(widget.imagePath,
+//                                width: double.infinity,
+                                      height: widget.smallBoxHeight),
+                                )
+                              : FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: Image.asset(widget.imagePath,
+                                      width: double.infinity,
+                                      height: widget.smallBoxHeight),
+                                ),
+                        ),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              top: 104,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Visibility(
+                  visible: _isArrowVisible,
+                  child: IconButton(
+                      splashRadius: 30.0,
+                      splashColor: lightPurple.withOpacity(0.3),
+                      onPressed: () {
+                        setState(() {
+                          _reverseArrowDirection = !_reverseArrowDirection;
+                          if (_reverseArrowDirection == true) {
+                            maxLines = 8;
+                            dropColor = Colors.white;
+                          } else {
+                            maxLines = 3;
+                            dropColor = const Color(0xff737373);
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        _reverseArrowDirection
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: dropColor,
+                        size: 30,
+                      )),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 class CustomReviews extends StatefulWidget {
   CustomReviews(
       {Key? key,

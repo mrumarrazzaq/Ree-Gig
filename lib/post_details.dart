@@ -80,10 +80,15 @@ class _PostDetailState extends State<PostDetail> {
         .doc('$currentUserEmail ${widget.title} ${widget.requestCategory}')
         .set({
           'Created AT': DateTime.now(),
+          'Seller Name': widget.userName,
           'Request Seller Email': widget.userEmail,
           'Request Buyer Email': currentUserEmail.toString(),
+          'Profile Image URL': widget.userProfileUrl,
           'Request Title': widget.title,
+          'Request Description': widget.description,
           'Request Category': widget.requestCategory,
+          'Request Image URL': widget.imagePath,
+          'Current Address': widget.location,
           'Is Request Accepted': isAccepted,
           'Is Job Complete': isCompleted,
         })
@@ -97,10 +102,15 @@ class _PostDetailState extends State<PostDetail> {
         .doc('${widget.userEmail} ${widget.title} ${widget.requestCategory}')
         .set({
           'Created AT': DateTime.now(),
+          'Seller Name': widget.userName,
           'Request Seller Email': widget.userEmail,
           'Request Buyer Email': currentUserEmail.toString(),
+          'Profile Image URL': widget.userProfileUrl,
           'Request Title': widget.title,
+          'Request Description': widget.description,
           'Request Category': widget.requestCategory,
+          'Request Image URL': widget.imagePath,
+          'Current Address': widget.location,
           'Is Request Accepted': isAccepted,
           'Is Job Complete': isCompleted,
         })
