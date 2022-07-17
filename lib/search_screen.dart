@@ -12,7 +12,7 @@ import 'package:ree_gig/search_by_name.dart';
 
 List<String> searchItems = [
   'Admin',
-  'Finanace & Account',
+  'Finance & Account',
   'Art & Crafts',
   'Freelance',
   'Education',

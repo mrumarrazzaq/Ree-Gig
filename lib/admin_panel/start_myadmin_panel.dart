@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'admin_categories_screen.dart';
 import 'admin_dashboard_screen.dart';
 import 'admin_home_screen.dart';
 import 'admin_report_screen.dart';
@@ -32,6 +33,9 @@ class StartMyAdminPanel extends StatelessWidget {
       routes: {
         AdminHomeScreen.id: (context) => const AdminHomeScreen(),
         AdminDashboardScreen.id: (context) => AdminDashboardScreen(),
+        AdminCategoriesScreen.id: (context) => AdminCategoriesScreen(),
+        CreateRequestCategory.id: (context) =>
+            CreateRequestCategory(isCallForUpdate: false, docId: 'NULL'),
         AdminUserScreen.id: (context) => AdminUserScreen(),
         AdminRequestScreen.id: (context) => AdminRequestScreen(),
         AdminReportScreen.id: (context) => AdminReportScreen(),

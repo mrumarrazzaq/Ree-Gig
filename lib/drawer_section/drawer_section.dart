@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ree_gig/drawer_section/buyer_order_analytics.dart';
+import 'package:ree_gig/drawer_section/seller_order_analytics.dart';
 import 'package:ree_gig/drawer_section/user_profile_section.dart';
 import 'package:ree_gig/home_screen.dart';
 import 'package:ree_gig/project_constants.dart';
@@ -167,6 +169,33 @@ class _DrawerSectionState extends State<DrawerSection> {
             thickness: 0.5,
           ),
           FlatButton(
+            child: ListTile(
+              leading: Icon(Icons.addchart_sharp),
+              title: Text(
+                  _userMode == 'User Mode' ? 'Buyer Orders' : 'Seller Orders'),
+            ),
+            onPressed: () {
+              _userMode == 'User Mode'
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BuyerOrderAnalytics(),
+                      ),
+                    )
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SellerOrderAnalytics(),
+                      ),
+                    );
+            },
+          ),
+          const Divider(
+            indent: 10.0,
+            endIndent: 10.0,
+            thickness: 0.5,
+          ),
+          FlatButton(
             child: const ListTile(
               leading: Icon(Icons.report),
               title: Text('Report a Problem'),
@@ -211,6 +240,12 @@ class _DrawerSectionState extends State<DrawerSection> {
               title: Text('Logout'),
             ),
             onPressed: () async => {
+              await FirebaseFirestore.instance
+                  .collection('User Data')
+                  .doc('$currentUserEmail')
+                  .update({
+                'User Current Status': 'Offline',
+              }),
               await FirebaseAuth.instance.signOut(),
               isUserLogout = true,
               await storage.delete(key: 'uid'),

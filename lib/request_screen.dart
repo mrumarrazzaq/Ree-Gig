@@ -43,7 +43,7 @@ class _RequestScreenState extends State<RequestScreen> {
   String _uniqueId = '';
   List<String> categoriesList = [
     'Admin',
-    'Finanace & Account',
+    'Finance & Account',
     'Art & Crafts',
     'Freelance',
     'Education',
@@ -67,14 +67,15 @@ class _RequestScreenState extends State<RequestScreen> {
 
   Future pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
+      final galleryImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (galleryImage == null) return;
 
-      final imageTemporary = File(image.path);
+      final imageTemporary = File(galleryImage.path);
       setState(() {
         this.image = imageTemporary;
       });
-      imagePath = image.path;
+      imagePath = galleryImage.path;
 
       print('------------------------------------');
       print('Image path : $imagePath');
@@ -642,7 +643,7 @@ class _RequestScreenState extends State<RequestScreen> {
         mapLocation = 'Get Map Location';
       });
       await Fluttertoast.showToast(
-        msg: 'Request submited Successfully', // message
+        msg: 'Request submitted Successfully', // message
         toastLength: Toast.LENGTH_SHORT, // length
         gravity: ToastGravity.BOTTOM, // location
         backgroundColor: Colors.green,

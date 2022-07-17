@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ree_gig/admin_panel/admin_categories_screen.dart';
 import 'package:ree_gig/project_constants.dart';
 
 import 'admin_dashboard_screen.dart';
@@ -20,6 +21,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   final tabs = [
     AdminDashboardScreen(),
+    AdminCategoriesScreen(),
     AdminUserScreen(),
     AdminRequestScreen(),
     AdminReportScreen(),
@@ -27,7 +29,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('Home Screen Bulid Running.....');
+    print('Home Screen Build Running.....');
     return Scaffold(
       body: tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -48,6 +50,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category),
+            label: 'Categories',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.supervisor_account),

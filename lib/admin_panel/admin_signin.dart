@@ -12,7 +12,7 @@ import 'package:ree_gig/security_section/forgot_password.dart';
 import 'package:ree_gig/security_section/register_screen2.dart';
 
 class AdminSignInScreen extends StatefulWidget {
-  static const String id = 'SigninScreen';
+  static const String id = 'SignInScreen';
 
   AdminSignInScreen({Key? key}) : super(key: key);
 
@@ -341,7 +341,7 @@ class _AdminSignInScreenState extends State<AdminSignInScreen> {
                             password = passwordController.text;
                             adminKey = adminKeyController.text;
                           });
-                          if (adminKey == "yeKeruceSyM") {
+                          if (adminKey == "MyAdminKey") {
                             userSignIn();
                           } else {
                             Fluttertoast.showToast(
@@ -369,7 +369,7 @@ class _AdminSignInScreenState extends State<AdminSignInScreen> {
                                   width: 15.0,
                                 ),
                                 Text(
-                                  'Please Wait...',
+                                  'Please Wait',
                                   style: TextStyle(
                                     color: lightPurple,
                                   ),

@@ -9,12 +9,12 @@ class AdminUserScreen extends StatefulWidget {
 }
 
 class _AdminUserScreenState extends State<AdminUserScreen> {
-  final Stream<QuerySnapshot> _registerdUsers =
+  final Stream<QuerySnapshot> _registeredUsers =
       FirebaseFirestore.instance.collection('User Data').snapshots();
 
   @override
   Widget build(BuildContext context) {
-    print('User Screen Bulid Running.....');
+    print('User Screen Build Running.....');
     return Scaffold(
       appBar: AppBar(
         title: const Text.rich(
@@ -43,7 +43,7 @@ class _AdminUserScreenState extends State<AdminUserScreen> {
         shrinkWrap: true,
         children: [
           StreamBuilder<QuerySnapshot>(
-              stream: _registerdUsers,
+              stream: _registeredUsers,
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
