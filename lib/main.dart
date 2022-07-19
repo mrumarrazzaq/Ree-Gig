@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
       title: 'REE GIG',
       theme: ThemeData(
         primaryColor: const Color(0xff821591),
-        splashColor: lightPurple.withOpacity(0.4),
+        splashColor: lightPurple.withOpacity(0.1),
         accentColor: lightPurple,
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xff540E79),

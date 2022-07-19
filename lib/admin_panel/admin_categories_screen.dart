@@ -62,7 +62,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('Categories')
-                  .orderBy('Created AT', descending: true)
+                  .orderBy('priority', descending: false)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -373,6 +373,7 @@ class CreateRequestCategory extends StatefulWidget {
 class _CreateRequestCategoryState extends State<CreateRequestCategory> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _categoryController = TextEditingController();
+  final _priorityController = TextEditingController();
 
   String _imagePath = '';
   File? image;
@@ -380,6 +381,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
   bool _isUploading = false;
   String requestCategory = '';
   String requestCategoryImageURL = '';
+  String categoryPriority = '';
   Future pickImage(ImageSource source, bool isUpdatedSelected) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -470,6 +472,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
           'Category Name': category,
           'Category Image URL': imageUrl.toString(),
           'Category Image Id': '$currentUserId -- ${_categoryController.text}',
+          'priority': _priorityController.text,
         })
         .then(
             (value) => print('Category Added Successfully : $currentUserEmail'))
@@ -487,12 +490,14 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
           .then((ds) {
         requestCategory = ds['Category Name'];
         requestCategoryImageURL = ds['Category Image URL'];
+        categoryPriority = ds['priority'];
       });
       setState(() {
         requestCategory = requestCategory;
         requestCategoryImageURL = requestCategoryImageURL;
         imageUrl = requestCategoryImageURL;
         _categoryController.text = requestCategory;
+        _priorityController.text = categoryPriority;
       });
     } catch (e) {
       print(e.toString());
@@ -509,6 +514,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
           'Category Name': category,
           'Category Image URL': categoryImageUrl,
           'Category Image Id': '$currentUserId -- ${_categoryController.text}',
+          'priority': _priorityController.text,
         })
         .then((value) => print('Data deleted '))
         .catchError((error) => print('Failed to delete Data $error'));
@@ -705,46 +711,96 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                     vertical: 20.0, horizontal: 20.0),
                 child: Form(
                   key: _formKey,
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    cursorColor: blackColor,
-                    style: TextStyle(color: blackColor),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      // fillColor: lightPurple,
-                      // filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(color: lightPurple, width: 1.5),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        // borderSide:
-                        // BorderSide(color: lightPurple, width: 1.5),
-                      ),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        keyboardType: TextInputType.text,
+                        cursorColor: blackColor,
+                        style: TextStyle(color: blackColor),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          // fillColor: lightPurple,
+                          // filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            borderSide:
+                                BorderSide(color: lightPurple, width: 1.5),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            // borderSide:
+                            // BorderSide(color: lightPurple, width: 1.5),
+                          ),
 
-                      hintText: widget.isCallForUpdate
-                          ? requestCategory
-                          : 'Enter Request Category',
-                      labelText: 'Request Category',
+                          hintText: widget.isCallForUpdate
+                              ? requestCategory
+                              : 'Enter Request Category',
+                          labelText: 'Request Category',
 //                           hintStyle: TextStyle(color: ),
 
-                      labelStyle: TextStyle(color: blackColor),
-                      prefixIcon: Icon(
-                        Icons.category,
-                        color: blackColor,
+                          labelStyle: TextStyle(color: blackColor),
+                          prefixIcon: Icon(
+                            Icons.category,
+                            color: blackColor,
+                          ),
+                          prefixText: '  ',
+                        ),
+                        controller: _categoryController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please Enter category';
+                          }
+                        },
                       ),
-                      prefixText: '  ',
-                    ),
-                    controller: _categoryController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please Enter category';
-                      }
-                    },
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          cursorColor: blackColor,
+                          style: TextStyle(color: blackColor),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            // fillColor: lightPurple,
+                            // filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide:
+                                  BorderSide(color: lightPurple, width: 1.5),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              // borderSide:
+                              // BorderSide(color: lightPurple, width: 1.5),
+                            ),
+
+                            hintText: widget.isCallForUpdate
+                                ? _priorityController.text
+                                : 'Enter Category Priority',
+                            labelText: 'Category Priority',
+//                           hintStyle: TextStyle(color: ),
+
+                            labelStyle: TextStyle(color: blackColor),
+                            prefixIcon: Icon(
+                              Icons.numbers_sharp,
+                              color: blackColor,
+                            ),
+                            prefixText: '  ',
+                          ),
+                          controller: _priorityController,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter category priority';
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

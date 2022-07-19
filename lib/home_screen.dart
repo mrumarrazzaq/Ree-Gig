@@ -147,133 +147,203 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       padding: const EdgeInsets.only(bottom: 30.0),
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                      title: 'Admin',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1554224154-26032ffc0d07?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFkbWlufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                      title: 'Business',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1537511446984-935f663eb1f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGJ1c2luZXNzfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                      title: 'Arts & Crafts',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1590853566724-83bc9da30d15?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YXJ0JTIwYW5kJTIwY3JhZnR8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                      title: 'Events',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1561489396-888724a1543d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fGV2ZW50fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                      title: 'Cleaning Service',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y2xlYW5pbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                      title: 'Education',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGVkdWNhdGlvbmFsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                      title: 'Construction',
-                                      imageUrl:
-                                          'https://media.istockphoto.com/photos/engineer-meeting-for-an-architectural-project-working-with-partner-picture-id1330168130?b=1&k=20&m=1330168130&s=170667a&w=0&h=vM84Dd1d3N4hhUDvf2mcOGQGaK_vBhljyQrsp17jOoE='),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                      title: 'Fashin',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1601762603339-fd61e28b698a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjl8fGZhc2hpb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                      title: 'House Related',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8aG91c2V8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                      title: 'IT',
-                                      imageUrl:
-                                          'https://media.istockphoto.com/photos/investment-technology-with-a-global-internet-connection-financial-picture-id1392046953?b=1&k=20&m=1392046953&s=170667a&w=0&h=cngtm8gJ_NBp6CgaUbUqUYlWmydEQnlfV2hKOerucKs='),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                      title: 'Recruitment',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1543269664-56d93c1b41a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cmVjcnVpdG1lbnR8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                      title: 'Logistics',
-                                      imageUrl:
-                                          'https://images.unsplash.com/photo-1559297434-fae8a1916a79?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fGxvZ2lzdGljc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Column(
-                                children: [
-                                  HomeCircularOptions(
-                                    title: 'Food & Beverages',
-                                    imageUrl:
-                                        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
-                                  ),
-                                  const SizedBox(height: 15),
-                                  HomeCircularOptions(
-                                    title: 'Others',
-                                    imageUrl:
-                                        'https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Categories')
+                                .orderBy('priority', descending: false)
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print('Something went wrong');
+                                return Center(
+                                    child: CircularProgressIndicator(
+                                  color: lightPurple,
+                                  strokeWidth: 2.0,
+                                ));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator(
+                                  color: lightPurple,
+                                  strokeWidth: 2.0,
+                                ));
+                              }
+                              if (snapshot.hasData) {
+                                final List storeCategories = [];
+
+                                snapshot.data!.docs
+                                    .map((DocumentSnapshot document) {
+                                  Map id =
+                                      document.data() as Map<String, dynamic>;
+                                  storeCategories.add(id);
+//            print('==============================================');
+//            print(storeRequests);
+//            print('Document id : ${document.id}');
+                                  id['id'] = document.id;
+                                }).toList();
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    storeCategories.isEmpty
+                                        ? const Text('No Category Find')
+                                        : Container(),
+                                    for (int i = 0;
+                                        i < storeCategories.length;
+                                        i++) ...[
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: HomeCircularOptions(
+                                          title: storeCategories[i]
+                                              ['Category Name'],
+                                          imageUrl: storeCategories[i]
+                                              ['Category Image URL'],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                );
+                              }
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: lightPurple,
+                                strokeWidth: 2.0,
+                              ));
+                            }),
                       ),
+                      // SingleChildScrollView(
+                      //   scrollDirection: Axis.horizontal,
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: [
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //                 title: 'Admin',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1554224154-26032ffc0d07?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFkbWlufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //                 title: 'Business',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1537511446984-935f663eb1f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGJ1c2luZXNzfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //                 title: 'Arts & Crafts',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1590853566724-83bc9da30d15?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YXJ0JTIwYW5kJTIwY3JhZnR8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //                 title: 'Events',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1561489396-888724a1543d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fGV2ZW50fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //                 title: 'Cleaning Service',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y2xlYW5pbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //                 title: 'Education',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGVkdWNhdGlvbmFsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //                 title: 'Construction',
+                      //                 imageUrl:
+                      //                     'https://media.istockphoto.com/photos/engineer-meeting-for-an-architectural-project-working-with-partner-picture-id1330168130?b=1&k=20&m=1330168130&s=170667a&w=0&h=vM84Dd1d3N4hhUDvf2mcOGQGaK_vBhljyQrsp17jOoE='),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //                 title: 'Fashin',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1601762603339-fd61e28b698a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjl8fGZhc2hpb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //                 title: 'House Related',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8aG91c2V8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //                 title: 'IT',
+                      //                 imageUrl:
+                      //                     'https://media.istockphoto.com/photos/investment-technology-with-a-global-internet-connection-financial-picture-id1392046953?b=1&k=20&m=1392046953&s=170667a&w=0&h=cngtm8gJ_NBp6CgaUbUqUYlWmydEQnlfV2hKOerucKs='),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //                 title: 'Recruitment',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1543269664-56d93c1b41a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cmVjcnVpdG1lbnR8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //                 title: 'Logistics',
+                      //                 imageUrl:
+                      //                     'https://images.unsplash.com/photo-1559297434-fae8a1916a79?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fGxvZ2lzdGljc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 12.0),
+                      //         child: Column(
+                      //           children: [
+                      //             HomeCircularOptions(
+                      //               title: 'Food & Beverages',
+                      //               imageUrl:
+                      //                   'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
+                      //             ),
+                      //             const SizedBox(height: 15),
+                      //             HomeCircularOptions(
+                      //               title: 'Others',
+                      //               imageUrl:
+                      //                   'https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ),
                   ],
                 ),
@@ -283,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(top: 230.0),
+              padding: const EdgeInsets.only(top: 160.0),
               child: Container(
                 height: double.infinity,
                 decoration: BoxDecoration(
@@ -299,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       //Recommended For You
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 20.0, top: 10.0, bottom: 10.0),
+                            left: 20.0, top: 20.0, bottom: 10.0),
                         child: Row(
                           children: [
                             Padding(
@@ -338,8 +408,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       ),
 
                       Padding(
-                        padding:
-                            const EdgeInsets.only(left: 20.0, bottom: 10.0),
+                        padding: const EdgeInsets.only(
+                            top: 10.0, left: 20.0, bottom: 10.0),
                         child: Row(
                           children: [
                             Padding(
@@ -397,6 +467,7 @@ class HomeCircularOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             backgroundColor: lightPurple,
@@ -404,7 +475,7 @@ class HomeCircularOptions extends StatelessWidget {
             maxRadius: 25.0,
           ),
           const SizedBox(height: 2.0),
-          Text(title, style: TextStyle(color: whiteColor)),
+          Text(title, style: TextStyle(color: whiteColor, fontSize: 15.0)),
         ],
       ),
       onTap: () {
