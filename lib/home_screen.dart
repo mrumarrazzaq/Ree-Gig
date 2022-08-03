@@ -179,14 +179,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   Map id =
                                       document.data() as Map<String, dynamic>;
                                   storeCategories.add(id);
-//            print('==============================================');
-//            print(storeRequests);
-//            print('Document id : ${document.id}');
                                   id['id'] = document.id;
                                 }).toList();
                                 return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     storeCategories.isEmpty
                                         ? const Text('No Category Find')
@@ -466,17 +462,22 @@ class HomeCircularOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            backgroundColor: lightPurple,
-            backgroundImage: NetworkImage(imageUrl),
-            maxRadius: 25.0,
-          ),
-          const SizedBox(height: 2.0),
-          Text(title, style: TextStyle(color: whiteColor, fontSize: 15.0)),
-        ],
+      child: SizedBox(
+        width: 120.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundColor: lightPurple,
+              backgroundImage: NetworkImage(imageUrl),
+              maxRadius: 25.0,
+            ),
+            const SizedBox(height: 2.0),
+            Text(title,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: whiteColor, fontSize: 13.0)),
+          ],
+        ),
       ),
       onTap: () {
         Navigator.push(

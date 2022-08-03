@@ -136,7 +136,7 @@ class _CustomContainer1State extends State<CustomContainer1> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 60) {
+      if (_length <= 70) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;
@@ -176,7 +176,7 @@ class _CustomContainer1State extends State<CustomContainer1> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Container(
           decoration: BoxDecoration(
               color: const Color(0xffdcd0d0),
@@ -189,13 +189,16 @@ class _CustomContainer1State extends State<CustomContainer1> {
                       const EdgeInsets.only(left: 15.0, top: 8.0, bottom: 5.0),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      widget.title,
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      softWrap: true,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                    child: SizedBox(
+                      width: 220,
+                      child: Text(
+                        widget.title,
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        softWrap: true,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
                     ),
                   ),
                 ),
@@ -207,22 +210,28 @@ class _CustomContainer1State extends State<CustomContainer1> {
                       color: Colors.red[800],
                       size: 18.0,
                     ),
-                    Text(
-                      widget.location,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    SizedBox(
+                      width: 220,
+                      child: Text(
+                        widget.location,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ]),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       right: 140.0, left: 15.0, bottom: 20.0),
-                  child: Text(
-                    widget.description,
-                    overflow: TextOverflow.fade,
-                    textAlign: TextAlign.justify,
-                    maxLines: maxLines,
-                    style: const TextStyle(
-                      fontStyle: FontStyle.italic,
+                  child: SizedBox(
+                    width: 220,
+                    child: Text(
+                      widget.description,
+                      overflow: TextOverflow.fade,
+                      textAlign: TextAlign.left,
+                      maxLines: maxLines,
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
                 ),
@@ -348,7 +357,7 @@ class _CustomContainer2State extends State<CustomContainer2> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 50) {
+      if (_length <= 70) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;
@@ -415,7 +424,7 @@ class _CustomContainer2State extends State<CustomContainer2> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Container(
           decoration: BoxDecoration(
               color: const Color(0xffdcd0d0),
@@ -428,13 +437,16 @@ class _CustomContainer2State extends State<CustomContainer2> {
                       const EdgeInsets.only(left: 15.0, top: 8.0, bottom: 5.0),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      widget.title,
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      softWrap: true,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                    child: SizedBox(
+                      width: 200,
+                      child: Text(
+                        widget.title,
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        softWrap: true,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
                     ),
                   ),
                 ),
@@ -446,22 +458,28 @@ class _CustomContainer2State extends State<CustomContainer2> {
                       color: Colors.red[800],
                       size: 18.0,
                     ),
-                    Text(
-                      widget.location,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    SizedBox(
+                      width: 220,
+                      child: Text(
+                        widget.location,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ]),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       right: 140.0, left: 15.0, bottom: 20.0),
-                  child: Text(
-                    widget.description,
-                    overflow: TextOverflow.fade,
-                    textAlign: TextAlign.justify,
-                    maxLines: maxLines,
-                    style: const TextStyle(
-                      fontStyle: FontStyle.italic,
+                  child: SizedBox(
+                    width: 220,
+                    child: Text(
+                      widget.description,
+                      overflow: TextOverflow.fade,
+                      textAlign: TextAlign.left,
+                      maxLines: maxLines,
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
                 ),
@@ -585,7 +603,7 @@ class _CustomContainer3State extends State<CustomContainer3> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 60) {
+      if (_length <= 70) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;
@@ -613,7 +631,7 @@ class _CustomContainer3State extends State<CustomContainer3> {
       },
       onTap: () {},
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Container(
           decoration: BoxDecoration(
               color: const Color(0xffdcd0d0),
@@ -626,13 +644,16 @@ class _CustomContainer3State extends State<CustomContainer3> {
                       const EdgeInsets.only(left: 15.0, top: 8.0, bottom: 5.0),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      widget.title,
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      softWrap: true,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                    child: SizedBox(
+                      width: 220,
+                      child: Text(
+                        widget.title,
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        softWrap: true,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
                     ),
                   ),
                 ),
@@ -644,22 +665,28 @@ class _CustomContainer3State extends State<CustomContainer3> {
                       color: Colors.red[800],
                       size: 18.0,
                     ),
-                    Text(
-                      widget.location,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    SizedBox(
+                      width: 220,
+                      child: Text(
+                        widget.location,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ]),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       right: 140.0, left: 15.0, bottom: 20.0),
-                  child: Text(
-                    widget.description,
-                    overflow: TextOverflow.fade,
-                    textAlign: TextAlign.justify,
-                    maxLines: maxLines,
-                    style: const TextStyle(
-                      fontStyle: FontStyle.italic,
+                  child: SizedBox(
+                    width: 220,
+                    child: Text(
+                      widget.description,
+                      overflow: TextOverflow.fade,
+                      textAlign: TextAlign.left,
+                      maxLines: maxLines,
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
                 ),
@@ -834,8 +861,10 @@ class _CustomReviewsState extends State<CustomReviews> {
                 backgroundColor: lightPurple.withOpacity(0.4),
               ),
         title: Text(widget.title,
+            textAlign: TextAlign.left,
             style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
               Icon(
@@ -864,7 +893,10 @@ class _CustomReviewsState extends State<CustomReviews> {
                 size: widget.starSize,
               ),
             ]),
-            Text(widget.description),
+            Text(
+              widget.description,
+              textAlign: TextAlign.left,
+            ),
             const Divider(),
           ],
         ));

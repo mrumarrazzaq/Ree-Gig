@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ree_gig/project_constants.dart';
@@ -85,7 +87,7 @@ class activeOrders extends StatelessWidget {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  print('Something went wrong');
+                  log('Something went wrong');
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -99,9 +101,6 @@ class activeOrders extends StatelessWidget {
                 snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map id = document.data() as Map<String, dynamic>;
                   storeRequests.add(id);
-//                  print('==============================================');
-//                  print(storeRequests);
-//                  print('Document id : ${document.id}');
                   id['id'] = document.id;
                 }).toList();
                 return Column(
@@ -170,7 +169,7 @@ class completedOrders extends StatelessWidget {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  print('Something went wrong');
+                  log('Something went wrong');
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(

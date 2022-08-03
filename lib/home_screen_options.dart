@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 import 'package:ree_gig/search_screen.dart';
@@ -16,7 +18,9 @@ class HomeScreenOptions extends StatefulWidget {
 class _HomeScreenOptionsState extends State<HomeScreenOptions> {
   final Stream<QuerySnapshot> _dailyUpdated =
       FirebaseFirestore.instance.collection('Requests').snapshots();
-
+  // String _imagePath = '';
+  // File? image;
+  // var imageUrl;
   bool _isVisibleBottomNavigation = false;
   readUserMode() async {
     var _value = await readMode();
@@ -127,6 +131,25 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
                             HomeCircularOptions(title: '1006'),
                             HomeCircularOptions(title: '1007'),
                             HomeCircularOptions(title: '1008'),
+                            Container(
+                              width: 50,
+                              height: 50,
+                              margin: const EdgeInsets.only(
+                                  right: 10.0, bottom: 20.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: IconButton(
+                                onPressed: () {
+                                  modalBottomSheetMenu();
+                                },
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -255,6 +278,98 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
           visible: _isVisibleBottomNavigation,
           child: const CustomNavigationBar()),
     );
+  }
+
+  modalBottomSheetMenu() {
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              height: 250.0,
+              color: Colors.transparent,
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0))),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text('Add New Item',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20.0)),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // pickImage(ImageSource.gallery);
+                      },
+                      child: CircleAvatar(
+                        // radius: 50.0,
+                        minRadius: 50.0,
+                        backgroundColor: Colors.grey[400],
+                        child: Icon(
+                          Icons.add,
+                          size: 50.0,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+    //  pickImage(ImageSource source) async {
+    //   try {
+    //     final image = await ImagePicker().pickImage(source: source);
+    //     if (image == null) return;
+    //
+    //     final imageTemporary = File(image.path);
+    //     setState(() {
+    //       this.image = imageTemporary;
+    //     });
+    //     _imagePath = image.path;
+    //
+    //     setState(() {
+    //
+    //     });
+    //     print('------------------------------------');
+    //     print('Image path : $_imagePath');
+    //
+    //     // ignore: unused_catch_clause
+    //   } catch (e) {
+    //     print('Pick image from gallery fail');
+    //   }
+    // }
+    // uploadImage(String path) async {
+    //   print('Image is Uploading...');
+    //   FirebaseStorage storage = FirebaseStorage.instance;
+    //   Reference ref = storage
+    //       .ref()
+    //       .child("Category Images/$currentUserId -- ${_categoryController.text}");
+    //   UploadTask uploadTask = ref.putFile(File(path));
+    //   await uploadTask.whenComplete(() async {
+    //     String url = await ref.getDownloadURL();
+    //     print('----------------------------------');
+    //     print('Image URL : $url');
+    //     print('----------------------------------');
+    //
+    //     _isUploading = false;
+    //     setState(() {
+    //       imageUrl = url;
+    //     });
+    //   }).catchError((onError) {
+    //     print('---------------------------------------');
+    //     print('Error while uploading image');
+    //     print(onError);
+    //     print('---------------------------------------');
+    //   });
+    // }
   }
 }
 

@@ -13,6 +13,9 @@ bool isUserLogout = true;
 
 int maxLines = 3;
 
+const freelanceMode = 'Freelancer Mode';
+const userMode = 'User Mode';
+
 Color neuColor = const Color(0xFFecf0f3);
 Color darkPink = Colors.pink;
 Color lightPink = Colors.pinkAccent;
@@ -34,14 +37,14 @@ preciseTime() {
   int hr = currentDateTime.hour - 12;
   int min = currentDateTime.minute;
   int sec = currentDateTime.second;
-  int milisec = currentDateTime.microsecond;
+  int miliSec = currentDateTime.microsecond;
   time = hr.toString() +
       ' : ' +
       min.toString() +
       ' : ' +
       sec.toString() +
       ' : ' +
-      milisec.toString();
+      miliSec.toString();
   return time;
 }
 

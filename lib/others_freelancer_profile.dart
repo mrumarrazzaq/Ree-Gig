@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/chat_screen.dart';
@@ -180,10 +181,11 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                 Stack(
                   children: [
                     Positioned.fill(
-                      right: 50.0,
+                      right: 40.0,
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             currentUserEmail.toString() == widget.userEmail
                                 ? Container()
@@ -278,9 +280,10 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                                         text: '${widget.userEmail} \n',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
+                                            fontSize: 12,
                                             overflow: TextOverflow.ellipsis)),
                                     TextSpan(
-                                        text: '$stringFollowers Follwers\n',
+                                        text: '$stringFollowers Followers\n',
                                         style: const TextStyle(
                                             fontStyle: FontStyle.italic)),
                                     TextSpan(
@@ -446,7 +449,7 @@ class OtherFreelancersRequests extends StatelessWidget {
 //                            shrinkWrap: true,
                   children: [
                     storeRequests.isEmpty
-                        ? const Text('No dItem Find')
+                        ? const Text('No Item Find')
                         : Container(),
                     for (int i = 0; i < storeRequests.length; i++) ...[
                       requestCategory == 'Special Category' &&

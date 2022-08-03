@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/drawer_section/buyer_order_analytics.dart';
@@ -169,10 +170,12 @@ class _DrawerSectionState extends State<DrawerSection> {
             thickness: 0.5,
           ),
           FlatButton(
-            child: ListTile(
-              leading: Icon(Icons.addchart_sharp),
+            child: const ListTile(
+              leading: Icon(Icons.analytics_outlined),
               title: Text(
-                  _userMode == 'User Mode' ? 'Buyer Orders' : 'Seller Orders'),
+                // _userMode == 'User Mode' ? 'Buyer Orders' : 'Seller Orders'
+                'Orders Analytics',
+              ),
             ),
             onPressed: () {
               _userMode == 'User Mode'
@@ -250,9 +253,9 @@ class _DrawerSectionState extends State<DrawerSection> {
               isUserLogout = true,
               await storage.delete(key: 'uid'),
               // ignore: avoid_print
-              print('signout called'),
+              print('signOut called'),
               await Fluttertoast.showToast(
-                msg: 'User Logout Sucessfully', // message
+                msg: 'User Logout Successfully', // message
                 toastLength: Toast.LENGTH_SHORT, // length
                 gravity: ToastGravity.BOTTOM, // location
                 backgroundColor: Colors.green,
@@ -265,47 +268,100 @@ class _DrawerSectionState extends State<DrawerSection> {
                   (route) => false),
             },
           ),
-          Card(
-            child: ListTile(
-              leading: IconButton(
-                icon: const Icon(Icons.account_balance_wallet_sharp),
-                onPressed: () {},
+          // Card(
+          //   child: ListTile(
+          //     leading: IconButton(
+          //       icon: const Icon(Icons.account_balance_wallet_sharp),
+          //       onPressed: () {},
+          //     ),
+          //     title: Text(_userMode),
+          //     trailing: Switch(
+          //         value: status,
+          //         activeColor: lightPurple,
+          //         onChanged: (value) {
+          //           setState(() {
+          //             status = value;
+          //             saveMode(status);
+          //             Vibrate.vibrate();
+          //           });
+          //           if (status == true) {
+          //             _userMode = 'Freelancer Mode';
+          //             Fluttertoast.showToast(
+          //               msg: 'Freelancer Mode ON', // message
+          //               toastLength: Toast.LENGTH_SHORT, // length
+          //               gravity: ToastGravity.BOTTOM, // location
+          //               backgroundColor: Colors.black,
+          //             );
+          //           } else {
+          //             _userMode = 'User Mode';
+          //             Fluttertoast.showToast(
+          //               msg: 'User Mode ON', // message
+          //               toastLength: Toast.LENGTH_SHORT, // length
+          //               gravity: ToastGravity.BOTTOM, // location
+          //               backgroundColor: lightPurple,
+          //             );
+          //           }
+          //           Navigator.pushAndRemoveUntil(
+          //               context,
+          //               MaterialPageRoute(
+          //                 builder: (context) => HomeScreen(),
+          //               ),
+          //               (route) => false);
+          //         },
+          //     ),
+          //   ),
+          // ),
+          Column(
+            children: [
+              const Text('Selected Mode'),
+              const SizedBox(
+                height: 5.0,
               ),
-              title: Text(_userMode),
-              trailing: Switch(
-                  value: status,
-                  activeColor: lightPurple,
-                  onChanged: (value) {
-                    setState(() {
-                      status = value;
-                      saveMode(status);
-                      Vibrate.vibrate();
-                    });
-                    if (status == true) {
-                      _userMode = 'Freelancer Mode';
-                      Fluttertoast.showToast(
-                        msg: 'Freelancer Mode ON', // message
-                        toastLength: Toast.LENGTH_SHORT, // length
-                        gravity: ToastGravity.BOTTOM, // location
-                        backgroundColor: Colors.black,
-                      );
-                    } else {
-                      _userMode = 'User Mode';
-                      Fluttertoast.showToast(
-                        msg: 'User Mode ON', // message
-                        toastLength: Toast.LENGTH_SHORT, // length
-                        gravity: ToastGravity.BOTTOM, // location
-                        backgroundColor: lightPurple,
-                      );
-                    }
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(),
-                        ),
-                        (route) => false);
-                  }),
-            ),
+              FlutterSwitch(
+                width: 130.0,
+                height: 35.0,
+                valueFontSize: 10.0,
+                toggleSize: 30.0,
+                activeColor: blackColor,
+                inactiveColor: darkPurple,
+                activeText: _userMode,
+                inactiveText: _userMode,
+                value: status,
+                borderRadius: 30.0,
+                padding: 3.0,
+                showOnOff: true,
+                onToggle: (value) {
+                  setState(() {
+                    status = value;
+                    saveMode(status);
+                    Vibrate.vibrate();
+                  });
+                  if (status == true) {
+                    _userMode = 'Freelancer Mode';
+                    Fluttertoast.showToast(
+                      msg: 'Freelancer Mode ON', // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM, // location
+                      backgroundColor: Colors.black,
+                    );
+                  } else {
+                    _userMode = 'User Mode';
+                    Fluttertoast.showToast(
+                      msg: 'User Mode ON', // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM, // location
+                      backgroundColor: lightPurple,
+                    );
+                  }
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(),
+                      ),
+                      (route) => false);
+                },
+              ),
+            ],
           ),
         ],
       ),

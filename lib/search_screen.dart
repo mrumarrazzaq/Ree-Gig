@@ -86,10 +86,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               SystemChannels.textInput.invokeMethod('TextInput.hide');
-//              searchItems.clear();
+              // searchItems.clear();
               _searchController.clear();
               Navigator.pop(context);
             }),
@@ -189,6 +189,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 child: CircleAvatar(
                                                   radius: 20,
                                                   backgroundColor: Colors.red,
+                                                  backgroundImage: NetworkImage(
+                                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo8WDeyK9BF_o03I-tKU8M7-IkAULDWLS7WQ&usqp=CAU'),
                                                 ),
                                               ),
                                               Padding(
@@ -198,12 +200,18 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   radius: 20,
                                                   backgroundColor:
                                                       Colors.yellow,
+                                                  backgroundImage: NetworkImage(
+                                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtIAXuXcmjH9G6zzy2gTXwSN1Z0aFOiQWlhg&usqp=CAU'),
                                                 ),
                                               ),
                                               Padding(
                                                 padding:
-                                                    EdgeInsets.only(left: 35.0),
-                                                child: CircleAvatar(radius: 20),
+                                                    EdgeInsets.only(left: 40.0),
+                                                child: CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundImage: NetworkImage(
+                                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzcbI2lRhCnQKHhYEOcin-UyT34WT8VtdBQA&usqp=CAU'),
+                                                ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(

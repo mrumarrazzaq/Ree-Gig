@@ -212,9 +212,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map id = document.data() as Map<String, dynamic>;
                             storedMassages.add(id);
-//                  print('==============================================');
-//                  print(storeRequests);
-//                  print('Document id : ${document.id}');
                             id['id'] = document.id;
                           }).toList();
 
@@ -338,7 +335,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   borderRadius: BorderRadius.circular(30.0),
                   borderSide: BorderSide(color: lightPurple, width: 1.5),
                 ),
-                hintText: 'Type Massages',
+                hintText: 'Type Messages',
                 hintStyle: const TextStyle(color: Colors.white),
                 labelStyle: TextStyle(color: whiteColor),
                 suffixIcon: IconButton(

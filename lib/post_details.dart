@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class PostDetail extends StatefulWidget {
@@ -92,8 +95,8 @@ class _PostDetailState extends State<PostDetail> {
           'Is Request Accepted': isAccepted,
           'Is Job Complete': isCompleted,
         })
-        .then((value) => print('Data Added Successfully : $currentUserEmail'))
-        .catchError((error) => print('Failed to Add Data $error'));
+        .then((value) => log('Data Added Successfully : $currentUserEmail'))
+        .catchError((error) => log('Failed to Add Data $error'));
   }
 
   Future<void> addSellerData(bool isAccepted, bool isCompleted) {
@@ -114,8 +117,8 @@ class _PostDetailState extends State<PostDetail> {
           'Is Request Accepted': isAccepted,
           'Is Job Complete': isCompleted,
         })
-        .then((value) => print('Data Added Successfully : ${widget.userEmail}'))
-        .catchError((error) => print('Failed to Add Data $error'));
+        .then((value) => log('Data Added Successfully : ${widget.userEmail}'))
+        .catchError((error) => log('Failed to Add Data $error'));
   }
 
   //--------------------------------------------------------------//
@@ -125,8 +128,8 @@ class _PostDetailState extends State<PostDetail> {
         .collection('Buyer $currentUserEmail')
         .doc(id)
         .delete()
-        .then((value) => print('Event deleted $id'))
-        .catchError((error) => print('Failed to delete Chat $error'));
+        .then((value) => log('Event deleted $id'))
+        .catchError((error) => log('Failed to delete Chat $error'));
   }
 
   Future<void> deleteSellerDataFromFirebase(id) {
@@ -134,8 +137,8 @@ class _PostDetailState extends State<PostDetail> {
         .collection('Seller ${widget.userEmail}')
         .doc(id)
         .delete()
-        .then((value) => print('Event deleted $id'))
-        .catchError((error) => print('Failed to delete Chat $error'));
+        .then((value) => log('Event deleted $id'))
+        .catchError((error) => log('Failed to delete Chat $error'));
   }
 
   updateSellerDataFromFirebase(id, bool value) {
@@ -145,8 +148,8 @@ class _PostDetailState extends State<PostDetail> {
         .update({
           'Is Job Complete': value,
         })
-        .then((value) => print('Data Updated $id'))
-        .catchError((error) => print('Failed to Update isCompleted $error'));
+        .then((value) => log('Data Updated $id'))
+        .catchError((error) => log('Failed to Update isCompleted $error'));
   }
 
   updateBuyerDataFromFirebase(id, bool value) {
@@ -156,8 +159,8 @@ class _PostDetailState extends State<PostDetail> {
         .update({
           'Is Job Complete': value,
         })
-        .then((value) => print('Data Updated $id'))
-        .catchError((error) => print('Failed to Update isCompleted $error'));
+        .then((value) => log('Data Updated $id'))
+        .catchError((error) => log('Failed to Update isCompleted $error'));
   }
 
 //--------------------------------------------------------------//
@@ -191,7 +194,7 @@ class _PostDetailState extends State<PostDetail> {
                         )
                       : CircleAvatar(
                           foregroundImage:
-                              AssetImage('icons/default_profile.png'),
+                              const AssetImage('icons/default_profile.png'),
                           radius: 25.0,
                           backgroundColor: lightPurple.withOpacity(0.4),
                         ),
@@ -213,63 +216,75 @@ class _PostDetailState extends State<PostDetail> {
                       // color: darkPurple,
                       // minWidth: double.infinity,
                       onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Center(
-                                  child: Text('Acknowledge'),
-                                ),
-                                content: const SizedBox(
-                                  height: 20,
-                                  child:
-                                      Center(child: Text('Choose Job status')),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () async {
-                                      await updateSellerDataFromFirebase(
-                                          '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
-                                          false);
-                                      await updateBuyerDataFromFirebase(
-                                          '$currentUserEmail ${widget.title} ${widget.requestCategory}',
-                                          false);
-                                      Navigator.pop(context, true);
-                                    },
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Icon(Icons.access_time,
-                                            color: Colors.red),
-                                        Text('Active',
-                                            style:
-                                                TextStyle(color: Colors.red)),
-                                      ],
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      await updateSellerDataFromFirebase(
-                                          '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
-                                          true);
-                                      await updateBuyerDataFromFirebase(
-                                          '$currentUserEmail ${widget.title} ${widget.requestCategory}',
-                                          true);
-                                      Navigator.pop(context, true);
-                                    },
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Icon(Icons.check, color: Colors.green),
-                                        Text('Completed',
-                                            style:
-                                                TextStyle(color: Colors.green)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (context) {
+                        //
+                        //       return AlertDialog(
+                        //         title: const Center(
+                        //           child: Text('Acknowledge'),
+                        //         ),
+                        //         content: const SizedBox(
+                        //           height: 20,
+                        //           child:
+                        //               Center(child: Text('Choose Job status')),
+                        //         ),
+                        //         actions: [
+                        //           TextButton(
+                        //             onPressed: () async {
+                        //               await updateSellerDataFromFirebase(
+                        //                   '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+                        //                   false);
+                        //               await updateBuyerDataFromFirebase(
+                        //                   '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+                        //                   false);
+                        //               Navigator.pop(context, true);
+                        //             },
+                        //             child: Row(
+                        //               mainAxisSize: MainAxisSize.min,
+                        //               children: const [
+                        //                 Icon(Icons.access_time,
+                        //                     color: Colors.red),
+                        //                 Text('Active',
+                        //                     style:
+                        //                         TextStyle(color: Colors.red)),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //           TextButton(
+                        //             onPressed: () async {
+                        //               await updateSellerDataFromFirebase(
+                        //                   '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+                        //                   true);
+                        //               await updateBuyerDataFromFirebase(
+                        //                   '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+                        //                   true);
+                        //               Navigator.pop(context, true);
+                        //             },
+                        //             child: Row(
+                        //               mainAxisSize: MainAxisSize.min,
+                        //               children: const [
+                        //                 Icon(Icons.check, color: Colors.green),
+                        //                 Text('Completed',
+                        //                     style:
+                        //                         TextStyle(color: Colors.green)),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       );
+                        //
+                        //     });
+                        if (!_isJobCompleted) {
+                          openJobCompletionDialog();
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: 'Job Already Completed', // message
+                            toastLength: Toast.LENGTH_SHORT, // length
+                            gravity: ToastGravity.BOTTOM, // location
+                            backgroundColor: Colors.grey,
+                          );
+                        }
                       },
                       child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -278,7 +293,7 @@ class _PostDetailState extends State<PostDetail> {
                           builder: (BuildContext context,
                               AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasError) {
-                              print('Something went wrong');
+                              log('Something went wrong');
                             }
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -307,7 +322,7 @@ class _PostDetailState extends State<PostDetail> {
                                   storedData[i]['Request Seller Email'] ==
                                       widget.userEmail &&
                                   storedData[i]['Is Job Complete'] == true) {
-                                print('yes isJobCompleted true');
+                                log('yes isJobCompleted true');
 
                                 _isJobCompleted = true;
                               }
@@ -318,7 +333,7 @@ class _PostDetailState extends State<PostDetail> {
                                   storedData[i]['Request Seller Email'] ==
                                       widget.userEmail &&
                                   storedData[i]['Is Job Complete'] == false) {
-                                print('yes isJobCompleted true');
+                                log('yes isJobCompleted true');
 
                                 _isJobCompleted = false;
                               }
@@ -405,7 +420,7 @@ class _PostDetailState extends State<PostDetail> {
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
-              print('Something went wrong');
+              log('Something went wrong');
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -431,7 +446,7 @@ class _PostDetailState extends State<PostDetail> {
                   storedMassages[i]['Request Seller Email'] ==
                       widget.userEmail &&
                   storedMassages[i]['Is Request Accepted'] == true) {
-                print('yes condition true');
+                log('yes condition true');
 
                 _condition = true;
               }
@@ -449,19 +464,21 @@ class _PostDetailState extends State<PostDetail> {
                   height: 50.0,
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   onPressed: () async {
-                    if (_condition) {
-                      deleteSellerDataFromFirebase(
-                          '${widget.userEmail} ${widget.title} ${widget.requestCategory}');
-                      deleteBuyerDataFromFirebase(
-                          '$currentUserEmail ${widget.title} ${widget.requestCategory}');
-                      setState(() {
-                        _condition = false;
-                      });
-                    } else {
-                      await addBuyerData(true, false);
-                      await addSellerData(true, false);
+                    // if (_condition) {
+                    //   deleteSellerDataFromFirebase(
+                    //       '${widget.userEmail} ${widget.title} ${widget.requestCategory}');
+                    //   deleteBuyerDataFromFirebase(
+                    //       '$currentUserEmail ${widget.title} ${widget.requestCategory}');
+                    //   setState(() {
+                    //     _condition = false;
+                    //   });
+                    // } else {
+                    //   await addBuyerData(true, false);
+                    //   await addSellerData(true, false);
+                    // }
+                    if (!_condition) {
+                      openRequestAcceptConfirmationDialog();
                     }
-
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
@@ -514,4 +531,144 @@ class _PostDetailState extends State<PostDetail> {
       //       ),
     );
   }
+
+  openRequestAcceptConfirmationDialog() => showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setState) {
+            var width = MediaQuery.of(context).size.width;
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              contentPadding: const EdgeInsets.only(top: 10.0),
+              title: const Center(child: Text('Confirmation')),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: width,
+                  height: 80.0,
+                  child: Center(
+                      child: Column(
+                    children: const [
+                      // Expanded(
+                      //   child: Text(title,
+                      //       style: const TextStyle(
+                      //           fontWeight: FontWeight.bold,
+                      //           overflow: TextOverflow.fade)),
+                      // ),
+                      Text('Do you want to Accept Request'),
+                      Text('Accepted Request cannot Re-accept',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 11,
+                              color: Colors.red)),
+                    ],
+                  )),
+                ),
+              ),
+              actions: [
+                //CANCEL Button
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: Text(
+                    'CANCEL',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+                //CREATE Button
+                TextButton(
+                  onPressed: () async {
+                    await addBuyerData(true, false);
+                    await addSellerData(true, false);
+                    Fluttertoast.showToast(
+                      msg: 'Request Accepted Successfully', // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM, // location
+                      backgroundColor: Colors.green,
+                    );
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: const Text(
+                    'ACCEPT',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+  openJobCompletionDialog() => showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setState) {
+            var width = MediaQuery.of(context).size.width;
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              contentPadding: const EdgeInsets.only(top: 10.0),
+              title: const Center(child: Text('Confirmation')),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: width,
+                  height: 80.0,
+                  child: Center(
+                      child: Column(
+                    children: const [
+                      Expanded(
+                        child: Text('JOB STATUS',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.fade)),
+                      ),
+                      Text('Is your job has been completed ?'),
+                      Text('You cannot change job status after completion ',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 11,
+                              color: Colors.red)),
+                    ],
+                  )),
+                ),
+              ),
+              actions: [
+                //CANCEL Button
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: Text(
+                    'CANCEL',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+                //CREATE Button
+                TextButton(
+                  onPressed: () async {
+                    await updateSellerDataFromFirebase(
+                        '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+                        true);
+                    await updateBuyerDataFromFirebase(
+                        '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+                        true);
+                    Navigator.pop(context, true);
+                    Fluttertoast.showToast(
+                      msg: 'Job Completed Successfully', // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM, // location
+                      backgroundColor: Colors.green,
+                    );
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: const Text(
+                    'COMPLETED',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
 }
