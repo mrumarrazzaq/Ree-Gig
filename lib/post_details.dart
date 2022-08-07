@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ree_gig/chat_screen.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class PostDetail extends StatefulWidget {
@@ -141,27 +142,27 @@ class _PostDetailState extends State<PostDetail> {
         .catchError((error) => log('Failed to delete Chat $error'));
   }
 
-  updateSellerDataFromFirebase(id, bool value) {
-    return FirebaseFirestore.instance
-        .collection('Seller ${widget.userEmail}')
-        .doc(id)
-        .update({
-          'Is Job Complete': value,
-        })
-        .then((value) => log('Data Updated $id'))
-        .catchError((error) => log('Failed to Update isCompleted $error'));
-  }
-
-  updateBuyerDataFromFirebase(id, bool value) {
-    return FirebaseFirestore.instance
-        .collection('Buyer $currentUserEmail')
-        .doc(id)
-        .update({
-          'Is Job Complete': value,
-        })
-        .then((value) => log('Data Updated $id'))
-        .catchError((error) => log('Failed to Update isCompleted $error'));
-  }
+  // updateSellerDataFromFirebase(id, bool value) {
+  //   return FirebaseFirestore.instance
+  //       .collection('Seller ${widget.userEmail}')
+  //       .doc(id)
+  //       .update({
+  //         'Is Job Complete': value,
+  //       })
+  //       .then((value) => log('Data Updated $id'))
+  //       .catchError((error) => log('Failed to Update isCompleted $error'));
+  // }
+  //
+  // updateBuyerDataFromFirebase(id, bool value) {
+  //   return FirebaseFirestore.instance
+  //       .collection('Buyer $currentUserEmail')
+  //       .doc(id)
+  //       .update({
+  //         'Is Job Complete': value,
+  //       })
+  //       .then((value) => log('Data Updated $id'))
+  //       .catchError((error) => log('Failed to Update isCompleted $error'));
+  // }
 
 //--------------------------------------------------------------//
   @override
@@ -207,160 +208,160 @@ class _PostDetailState extends State<PostDetail> {
                     style: TextStyle(color: whiteColor),
                   ),
                 ),
-                Positioned.fill(
-                  left: 20.0,
-                  top: 2.0,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      // color: darkPurple,
-                      // minWidth: double.infinity,
-                      onPressed: () {
-                        // showDialog(
-                        //     context: context,
-                        //     builder: (context) {
-                        //
-                        //       return AlertDialog(
-                        //         title: const Center(
-                        //           child: Text('Acknowledge'),
-                        //         ),
-                        //         content: const SizedBox(
-                        //           height: 20,
-                        //           child:
-                        //               Center(child: Text('Choose Job status')),
-                        //         ),
-                        //         actions: [
-                        //           TextButton(
-                        //             onPressed: () async {
-                        //               await updateSellerDataFromFirebase(
-                        //                   '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
-                        //                   false);
-                        //               await updateBuyerDataFromFirebase(
-                        //                   '$currentUserEmail ${widget.title} ${widget.requestCategory}',
-                        //                   false);
-                        //               Navigator.pop(context, true);
-                        //             },
-                        //             child: Row(
-                        //               mainAxisSize: MainAxisSize.min,
-                        //               children: const [
-                        //                 Icon(Icons.access_time,
-                        //                     color: Colors.red),
-                        //                 Text('Active',
-                        //                     style:
-                        //                         TextStyle(color: Colors.red)),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //           TextButton(
-                        //             onPressed: () async {
-                        //               await updateSellerDataFromFirebase(
-                        //                   '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
-                        //                   true);
-                        //               await updateBuyerDataFromFirebase(
-                        //                   '$currentUserEmail ${widget.title} ${widget.requestCategory}',
-                        //                   true);
-                        //               Navigator.pop(context, true);
-                        //             },
-                        //             child: Row(
-                        //               mainAxisSize: MainAxisSize.min,
-                        //               children: const [
-                        //                 Icon(Icons.check, color: Colors.green),
-                        //                 Text('Completed',
-                        //                     style:
-                        //                         TextStyle(color: Colors.green)),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       );
-                        //
-                        //     });
-                        if (!_isJobCompleted) {
-                          openJobCompletionDialog();
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: 'Job Already Completed', // message
-                            toastLength: Toast.LENGTH_SHORT, // length
-                            gravity: ToastGravity.BOTTOM, // location
-                            backgroundColor: Colors.grey,
-                          );
-                        }
-                      },
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('Buyer $currentUserEmail')
-                              .snapshots(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasError) {
-                              log('Something went wrong');
-                            }
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                  child: CircularProgressIndicator(
-                                color: lightPurple,
-                                strokeWidth: 2.0,
-                              ));
-                            }
-
-                            final List storedData = [];
-
-                            snapshot.data!.docs
-                                .map((DocumentSnapshot document) {
-                              Map id = document.data() as Map<String, dynamic>;
-
-                              // print(document.id);
-                              storedData.add(id);
-                              id['id'] = document.id;
-                            }).toList();
-                            for (int i = 0; i < storedData.length; i++) {
-                              if (storedData[i]['Request Title'] ==
-                                      widget.title &&
-                                  storedData[i]['Request Category'] ==
-                                      widget.requestCategory &&
-                                  storedData[i]['Request Seller Email'] ==
-                                      widget.userEmail &&
-                                  storedData[i]['Is Job Complete'] == true) {
-                                log('yes isJobCompleted true');
-
-                                _isJobCompleted = true;
-                              }
-                              if (storedData[i]['Request Title'] ==
-                                      widget.title &&
-                                  storedData[i]['Request Category'] ==
-                                      widget.requestCategory &&
-                                  storedData[i]['Request Seller Email'] ==
-                                      widget.userEmail &&
-                                  storedData[i]['Is Job Complete'] == false) {
-                                log('yes isJobCompleted true');
-
-                                _isJobCompleted = false;
-                              }
-                            }
-                            return Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                    _isJobCompleted
-                                        ? Icons.check
-                                        : Icons.access_time,
-                                    color: _isJobCompleted
-                                        ? Colors.green
-                                        : Colors.red),
-                                Text(_isJobCompleted ? 'Completed' : 'Active',
-                                    style: TextStyle(
-                                      color: _isJobCompleted
-                                          ? Colors.green
-                                          : Colors.red,
-                                    )),
-                              ],
-                            );
-                          }),
-                    ),
-                  ),
-                ),
+                // Positioned.fill(
+                //   left: 20.0,
+                //   top: 2.0,
+                //   child: Align(
+                //     alignment: Alignment.centerRight,
+                //     child: TextButton(
+                //       // color: darkPurple,
+                //       // minWidth: double.infinity,
+                //       onPressed: () {
+                //         // showDialog(
+                //         //     context: context,
+                //         //     builder: (context) {
+                //         //
+                //         //       return AlertDialog(
+                //         //         title: const Center(
+                //         //           child: Text('Acknowledge'),
+                //         //         ),
+                //         //         content: const SizedBox(
+                //         //           height: 20,
+                //         //           child:
+                //         //               Center(child: Text('Choose Job status')),
+                //         //         ),
+                //         //         actions: [
+                //         //           TextButton(
+                //         //             onPressed: () async {
+                //         //               await updateSellerDataFromFirebase(
+                //         //                   '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+                //         //                   false);
+                //         //               await updateBuyerDataFromFirebase(
+                //         //                   '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+                //         //                   false);
+                //         //               Navigator.pop(context, true);
+                //         //             },
+                //         //             child: Row(
+                //         //               mainAxisSize: MainAxisSize.min,
+                //         //               children: const [
+                //         //                 Icon(Icons.access_time,
+                //         //                     color: Colors.red),
+                //         //                 Text('Active',
+                //         //                     style:
+                //         //                         TextStyle(color: Colors.red)),
+                //         //               ],
+                //         //             ),
+                //         //           ),
+                //         //           TextButton(
+                //         //             onPressed: () async {
+                //         //               await updateSellerDataFromFirebase(
+                //         //                   '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+                //         //                   true);
+                //         //               await updateBuyerDataFromFirebase(
+                //         //                   '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+                //         //                   true);
+                //         //               Navigator.pop(context, true);
+                //         //             },
+                //         //             child: Row(
+                //         //               mainAxisSize: MainAxisSize.min,
+                //         //               children: const [
+                //         //                 Icon(Icons.check, color: Colors.green),
+                //         //                 Text('Completed',
+                //         //                     style:
+                //         //                         TextStyle(color: Colors.green)),
+                //         //               ],
+                //         //             ),
+                //         //           ),
+                //         //         ],
+                //         //       );
+                //         //
+                //         //     });
+                //         if (!_isJobCompleted) {
+                //           openJobCompletionDialog();
+                //         } else {
+                //           Fluttertoast.showToast(
+                //             msg: 'Job Already Completed', // message
+                //             toastLength: Toast.LENGTH_SHORT, // length
+                //             gravity: ToastGravity.BOTTOM, // location
+                //             backgroundColor: Colors.grey,
+                //           );
+                //         }
+                //       },
+                //       child: StreamBuilder<QuerySnapshot>(
+                //           stream: FirebaseFirestore.instance
+                //               .collection('Buyer $currentUserEmail')
+                //               .snapshots(),
+                //           builder: (BuildContext context,
+                //               AsyncSnapshot<QuerySnapshot> snapshot) {
+                //             if (snapshot.hasError) {
+                //               log('Something went wrong');
+                //             }
+                //             if (snapshot.connectionState ==
+                //                 ConnectionState.waiting) {
+                //               return Center(
+                //                   child: CircularProgressIndicator(
+                //                 color: lightPurple,
+                //                 strokeWidth: 2.0,
+                //               ));
+                //             }
+                //
+                //             final List storedData = [];
+                //
+                //             snapshot.data!.docs
+                //                 .map((DocumentSnapshot document) {
+                //               Map id = document.data() as Map<String, dynamic>;
+                //
+                //               // print(document.id);
+                //               storedData.add(id);
+                //               id['id'] = document.id;
+                //             }).toList();
+                //             for (int i = 0; i < storedData.length; i++) {
+                //               if (storedData[i]['Request Title'] ==
+                //                       widget.title &&
+                //                   storedData[i]['Request Category'] ==
+                //                       widget.requestCategory &&
+                //                   storedData[i]['Request Seller Email'] ==
+                //                       widget.userEmail &&
+                //                   storedData[i]['Is Job Complete'] == true) {
+                //                 log('yes isJobCompleted true');
+                //
+                //                 _isJobCompleted = true;
+                //               }
+                //               if (storedData[i]['Request Title'] ==
+                //                       widget.title &&
+                //                   storedData[i]['Request Category'] ==
+                //                       widget.requestCategory &&
+                //                   storedData[i]['Request Seller Email'] ==
+                //                       widget.userEmail &&
+                //                   storedData[i]['Is Job Complete'] == false) {
+                //                 log('yes isJobCompleted true');
+                //
+                //                 _isJobCompleted = false;
+                //               }
+                //             }
+                //             return Row(
+                //               mainAxisSize: MainAxisSize.min,
+                //               mainAxisAlignment: MainAxisAlignment.center,
+                //               children: [
+                //                 Icon(
+                //                     _isJobCompleted
+                //                         ? Icons.check
+                //                         : Icons.access_time,
+                //                     color: _isJobCompleted
+                //                         ? Colors.green
+                //                         : Colors.red),
+                //                 Text(_isJobCompleted ? 'Completed' : 'Active',
+                //                     style: TextStyle(
+                //                       color: _isJobCompleted
+                //                           ? Colors.green
+                //                           : Colors.red,
+                //                     )),
+                //               ],
+                //             );
+                //           }),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
             Container(
@@ -464,6 +465,21 @@ class _PostDetailState extends State<PostDetail> {
                   height: 50.0,
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   onPressed: () async {
+                    if (_condition) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(
+                              title: widget.title,
+                              requestCategory: widget.requestCategory,
+                              userEmail: widget.userEmail,
+                              name: widget.userName,
+                              receiverEmail: widget.userEmail,
+                              imagePath: widget.userProfileUrl,
+                              isSpecial: true),
+                        ),
+                      );
+                    }
                     // if (_condition) {
                     //   deleteSellerDataFromFirebase(
                     //       '${widget.userEmail} ${widget.title} ${widget.requestCategory}');
@@ -545,16 +561,10 @@ class _PostDetailState extends State<PostDetail> {
               content: SingleChildScrollView(
                 child: SizedBox(
                   width: width,
-                  height: 80.0,
+                  height: 40.0,
                   child: Center(
                       child: Column(
                     children: const [
-                      // Expanded(
-                      //   child: Text(title,
-                      //       style: const TextStyle(
-                      //           fontWeight: FontWeight.bold,
-                      //           overflow: TextOverflow.fade)),
-                      // ),
                       Text('Do you want to Accept Request'),
                       Text('Accepted Request cannot Re-accept',
                           style: TextStyle(
@@ -588,6 +598,19 @@ class _PostDetailState extends State<PostDetail> {
                       backgroundColor: Colors.green,
                     );
                     Navigator.of(context, rootNavigator: true).pop('dialog');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                            title: widget.title,
+                            requestCategory: widget.requestCategory,
+                            userEmail: widget.userEmail,
+                            name: widget.userName,
+                            receiverEmail: widget.userEmail,
+                            imagePath: widget.userProfileUrl,
+                            isSpecial: true),
+                      ),
+                    );
                   },
                   child: const Text(
                     'ACCEPT',
@@ -599,76 +622,76 @@ class _PostDetailState extends State<PostDetail> {
           },
         ),
       );
-  openJobCompletionDialog() => showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-          builder: (context, setState) {
-            var width = MediaQuery.of(context).size.width;
-            return AlertDialog(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              contentPadding: const EdgeInsets.only(top: 10.0),
-              title: const Center(child: Text('Confirmation')),
-              content: SingleChildScrollView(
-                child: SizedBox(
-                  width: width,
-                  height: 80.0,
-                  child: Center(
-                      child: Column(
-                    children: const [
-                      Expanded(
-                        child: Text('JOB STATUS',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                overflow: TextOverflow.fade)),
-                      ),
-                      Text('Is your job has been completed ?'),
-                      Text('You cannot change job status after completion ',
-                          style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              fontSize: 11,
-                              color: Colors.red)),
-                    ],
-                  )),
-                ),
-              ),
-              actions: [
-                //CANCEL Button
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).pop('dialog');
-                  },
-                  child: Text(
-                    'CANCEL',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ),
-                //CREATE Button
-                TextButton(
-                  onPressed: () async {
-                    await updateSellerDataFromFirebase(
-                        '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
-                        true);
-                    await updateBuyerDataFromFirebase(
-                        '$currentUserEmail ${widget.title} ${widget.requestCategory}',
-                        true);
-                    Navigator.pop(context, true);
-                    Fluttertoast.showToast(
-                      msg: 'Job Completed Successfully', // message
-                      toastLength: Toast.LENGTH_SHORT, // length
-                      gravity: ToastGravity.BOTTOM, // location
-                      backgroundColor: Colors.green,
-                    );
-                    Navigator.of(context, rootNavigator: true).pop('dialog');
-                  },
-                  child: const Text(
-                    'COMPLETED',
-                    style: TextStyle(color: Colors.green),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
+  // openJobCompletionDialog() => showDialog(
+  //       context: context,
+  //       builder: (context) => StatefulBuilder(
+  //         builder: (context, setState) {
+  //           var width = MediaQuery.of(context).size.width;
+  //           return AlertDialog(
+  //             shape: const RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
+  //             contentPadding: const EdgeInsets.only(top: 10.0),
+  //             title: const Center(child: Text('Confirmation')),
+  //             content: SingleChildScrollView(
+  //               child: SizedBox(
+  //                 width: width,
+  //                 height: 80.0,
+  //                 child: Center(
+  //                     child: Column(
+  //                   children: const [
+  //                     Expanded(
+  //                       child: Text('JOB STATUS',
+  //                           style: TextStyle(
+  //                               fontWeight: FontWeight.bold,
+  //                               overflow: TextOverflow.fade)),
+  //                     ),
+  //                     Text('Is your job has been completed ?'),
+  //                     Text('You cannot change job status after completion ',
+  //                         style: TextStyle(
+  //                             fontStyle: FontStyle.italic,
+  //                             fontSize: 11,
+  //                             color: Colors.red)),
+  //                   ],
+  //                 )),
+  //               ),
+  //             ),
+  //             actions: [
+  //               //CANCEL Button
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context, rootNavigator: true).pop('dialog');
+  //                 },
+  //                 child: Text(
+  //                   'CANCEL',
+  //                   style: TextStyle(color: Colors.grey[600]),
+  //                 ),
+  //               ),
+  //               //CREATE Button
+  //               TextButton(
+  //                 onPressed: () async {
+  //                   await updateSellerDataFromFirebase(
+  //                       '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+  //                       true);
+  //                   await updateBuyerDataFromFirebase(
+  //                       '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+  //                       true);
+  //                   Navigator.pop(context, true);
+  //                   Fluttertoast.showToast(
+  //                     msg: 'Job Completed Successfully', // message
+  //                     toastLength: Toast.LENGTH_SHORT, // length
+  //                     gravity: ToastGravity.BOTTOM, // location
+  //                     backgroundColor: Colors.green,
+  //                   );
+  //                   Navigator.of(context, rootNavigator: true).pop('dialog');
+  //                 },
+  //                 child: const Text(
+  //                   'COMPLETED',
+  //                   style: TextStyle(color: Colors.green),
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       ),
+  //     );
 }

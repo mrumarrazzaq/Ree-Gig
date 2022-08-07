@@ -10,23 +10,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'admin_subCategory_screen.dart';
-
-class AdminCategoriesScreen extends StatefulWidget {
-  static const String id = 'AdminCategoriesScreen';
-  const AdminCategoriesScreen({Key? key}) : super(key: key);
-
+class AdminSubCategoriesScreen extends StatefulWidget {
+  AdminSubCategoriesScreen({Key? key, required this.mainCategoryTitle})
+      : super(key: key);
+  String mainCategoryTitle;
   @override
-  State<AdminCategoriesScreen> createState() => _AdminCategoriesScreenState();
+  State<AdminSubCategoriesScreen> createState() =>
+      _AdminSubCategoriesScreenState();
 }
 
-class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
+class _AdminSubCategoriesScreenState extends State<AdminSubCategoriesScreen> {
   var deleteId;
   var updateId;
 
   Future<void> deleteData(id) {
     return FirebaseFirestore.instance
-        .collection('Categories')
+        .collection(widget.mainCategoryTitle)
         .doc(id)
         .delete()
         .then((value) => print('Data deleted '))
@@ -37,12 +36,18 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back, color: blackColor),
+        ),
         title: const Text.rich(
           TextSpan(
             text: '', // default text style
             children: <TextSpan>[
               TextSpan(
-                  text: 'Categories ',
+                  text: 'SubCategories ',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
@@ -64,7 +69,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
         children: [
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('Categories')
+                  .collection(widget.mainCategoryTitle)
                   .orderBy('priority', descending: false)
                   .snapshots(),
               builder: (BuildContext context,
@@ -95,37 +100,29 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                     )),
                   );
                 }
-                final List storeCategories = [];
+                final List storeSubCategories = [];
 
                 snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map id = document.data() as Map<String, dynamic>;
-                  storeCategories.add(id);
+                  storeSubCategories.add(id);
                   id['id'] = document.id;
                 }).toList();
                 return Column(
 //                            shrinkWrap: true,
                   children: [
-                    storeCategories.isEmpty
+                    storeSubCategories.isEmpty
                         ? const Padding(
                             padding: EdgeInsets.only(top: 20.0),
-                            child: Text('No Category Find'),
+                            child: Text('No SubCategory Find'),
                           )
                         : Container(),
-                    for (int i = 0; i < storeCategories.length; i++) ...[
+                    for (int i = 0; i < storeSubCategories.length; i++) ...[
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AdminSubCategoriesScreen(
-                                    mainCategoryTitle: storeCategories[i]
-                                        ['Category Name']),
-                              ));
-                        },
+                        onTap: () {},
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5.0),
                           child: SwipeActionCell(
-                            key: ObjectKey(storeCategories[i]['Created AT']),
+                            key: ObjectKey(storeSubCategories[i]['Created AT']),
                             leadingActions: [
                               SwipeAction(
                                 title: "Edit",
@@ -135,14 +132,16 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                                 icon: Icon(Icons.edit, color: whiteColor),
                                 onTap: (CompletionHandler handler) async {
                                   setState(() {
-                                    updateId = storeCategories[i]['id'];
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              CreateRequestCategory(
+                                              CreateRequestSubCategory(
+                                                  mainCategoryTitle:
+                                                      widget.mainCategoryTitle,
                                                   isCallForUpdate: true,
-                                                  docId: updateId),
+                                                  docId: storeSubCategories[i]
+                                                      ['id']),
                                         ));
                                   });
                                 },
@@ -156,11 +155,12 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                                 color: Colors.red,
                                 icon: Icon(Icons.delete, color: whiteColor),
                                 onTap: (CompletionHandler handler) async {
-                                  deleteId = storeCategories[i]['id'];
+                                  deleteId = storeSubCategories[i]['id'];
                                   openDeleteDialog(
                                       deleteId,
-                                      storeCategories[i]['Category Name'],
-                                      storeCategories[i]['Category Image URL']);
+                                      storeSubCategories[i]['SubCategory Name'],
+                                      storeSubCategories[i]
+                                          ['SubCategory Image URL']);
 
                                   setState(() {});
                                 },
@@ -169,7 +169,9 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                             child: ListTile(
                               leading: GestureDetector(
                                 onTap: () {
-                                  storeCategories[i]['imageUrl'] == ''
+                                  storeSubCategories[i]
+                                              ['SubCategory Image URL'] ==
+                                          ''
                                       ? null
                                       : showDialog(
                                           context: context,
@@ -180,20 +182,20 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                                             content: FittedBox(
                                               fit: BoxFit.fill,
                                               child: Image.network(
-                                                  '${storeCategories[i]['Category Image URL']}'),
+                                                  '${storeSubCategories[i]['Category Image URL']}'),
                                             ),
                                           ),
                                         );
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  child: storeCategories[i]
-                                              ['Category Image URL'] !=
+                                  child: storeSubCategories[i]
+                                              ['SubCategory Image URL'] !=
                                           ''
                                       ? FittedBox(
                                           fit: BoxFit.fill,
                                           child: Image.network(
-                                            '${storeCategories[i]['Category Image URL']}',
+                                            '${storeSubCategories[i]['SubCategory Image URL']}',
                                             width: 50,
                                             height: 50,
                                           ),
@@ -211,47 +213,11 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                                 ),
                               ),
                               title: Text(
-                                  '${storeCategories[i]['Category Name']}',
+                                  '${storeSubCategories[i]['SubCategory Name']}',
                                   style: const TextStyle(
                                       overflow: TextOverflow.fade,
                                       fontWeight: FontWeight.bold)),
                             ),
-//                             Row(
-//                               children: [
-//                                 Padding(
-//                                   padding: const EdgeInsets.only(
-//                                       left: 5.0, right: 20.0),
-//                                   child: ClipRRect(
-//                                     borderRadius: BorderRadius.circular(10.0),
-//                                     child: storeCategories[i]
-//                                                 ['Category Image URL'] !=
-//                                             ''
-//                                         ? FittedBox(
-//                                             fit: BoxFit.fill,
-//                                             child: Image.network(
-//                                               '${storeCategories[i]['Category Image URL']}',
-//                                               width: 50,
-//                                               height: 50,
-//                                             ),
-//                                           )
-//                                         : FittedBox(
-//                                             fit: BoxFit.fill,
-//
-//                                             child: Container(
-//                                               width: 50,
-//                                               height: 50,
-//                                               color: Colors.grey,
-//                                             ),
-// //                                width: double.infinity,
-//                                           ),
-//                                   ),
-//                                 ),
-//                                 Text('${storeCategories[i]['Category Name']}',
-//                                     style: const TextStyle(
-//                                         overflow: TextOverflow.fade,
-//                                         fontWeight: FontWeight.bold)),
-//                               ],
-//                             ),
                           ),
                         ),
                       ),
@@ -266,11 +232,13 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CreateRequestCategory(
-                    isCallForUpdate: false, docId: 'NULL'),
+                builder: (context) => CreateRequestSubCategory(
+                    mainCategoryTitle: widget.mainCategoryTitle,
+                    isCallForUpdate: false,
+                    docId: 'NULL'),
               ));
         },
-        tooltip: 'Add new Category',
+        tooltip: 'Add new SubCategory',
         backgroundColor: lightPurple,
         child: const Icon(Icons.add),
       ),
@@ -286,7 +254,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               contentPadding: const EdgeInsets.only(top: 10.0),
-              title: const Center(child: Text('Delete Category')),
+              title: const Center(child: Text('Delete SubCategory')),
               content: SingleChildScrollView(
                 child: SizedBox(
                   width: width,
@@ -300,8 +268,8 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                                 fontWeight: FontWeight.bold,
                                 overflow: TextOverflow.fade)),
                       ),
-                      const Text('Do you want to delete category'),
-                      const Text('Deleted category cannot be recovered',
+                      const Text('Do you want to delete sub-category'),
+                      const Text('Deleted sub-category cannot be recovered',
                           style: TextStyle(
                               fontStyle: FontStyle.italic,
                               fontSize: 10,
@@ -330,7 +298,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
                         .delete();
                     await deleteData(deleteId);
                     await Fluttertoast.showToast(
-                      msg: 'Category delete successfully', // message
+                      msg: 'SubCategory delete successfully', // message
                       toastLength: Toast.LENGTH_SHORT, // length
                       gravity: ToastGravity.BOTTOM, // location
                       backgroundColor: Colors.green,
@@ -349,28 +317,33 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
       );
 }
 
-class CreateRequestCategory extends StatefulWidget {
+class CreateRequestSubCategory extends StatefulWidget {
   static const String id = 'CreateRequestCategory';
-  CreateRequestCategory(
-      {Key? key, required this.docId, required this.isCallForUpdate})
+  CreateRequestSubCategory(
+      {Key? key,
+      required this.mainCategoryTitle,
+      required this.docId,
+      required this.isCallForUpdate})
       : super(key: key);
+  String mainCategoryTitle;
   bool isCallForUpdate;
   String docId;
   @override
-  State<CreateRequestCategory> createState() => _CreateRequestCategoryState();
+  State<CreateRequestSubCategory> createState() =>
+      _CreateRequestSubCategoryState();
 }
 
-class _CreateRequestCategoryState extends State<CreateRequestCategory> {
+class _CreateRequestSubCategoryState extends State<CreateRequestSubCategory> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _categoryController = TextEditingController();
+  final _subCategoryController = TextEditingController();
   final _priorityController = TextEditingController();
 
   String _imagePath = '';
   File? image;
   var imageUrl;
   bool _isUploading = false;
-  String requestCategory = '';
-  String requestCategoryImageURL = '';
+  String requestSubCategory = '';
+  String requestSubCategoryImageURL = '';
   String categoryPriority = '';
   Future pickImage(ImageSource source, bool isUpdatedSelected) async {
     try {
@@ -384,13 +357,13 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
       _imagePath = image.path;
 
       setState(() {
-        requestCategoryImageURL = 'NULL';
+        requestSubCategoryImageURL = 'NULL';
       });
       print('------------------------------------');
       print('Image path : $_imagePath');
       if (isUpdatedSelected) {
         await FirebaseStorage.instance
-            .refFromURL(requestCategoryImageURL)
+            .refFromURL(requestSubCategoryImageURL)
             .delete();
         print('==================================');
         print('previous image delete successfully');
@@ -405,9 +378,8 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
   uploadImage(String path) async {
     print('Image is Uploading...');
     FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage
-        .ref()
-        .child("Category Images/$currentUserId -- ${_categoryController.text}");
+    Reference ref = storage.ref().child(
+        "SubCategory Images/$currentUserId -- ${_subCategoryController.text}");
     UploadTask uploadTask = ref.putFile(File(path));
     await uploadTask.whenComplete(() async {
       String url = await ref.getDownloadURL();
@@ -431,9 +403,8 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
     print('Image is Uploading...');
 
     FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage
-        .ref()
-        .child("Category Images/$currentUserId -- ${_categoryController.text}");
+    Reference ref = storage.ref().child(
+        "SubCategory Images/$currentUserId -- ${_subCategoryController.text}");
     UploadTask uploadTask = ref.putFile(File(path));
     await uploadTask.whenComplete(() async {
       String url = await ref.getDownloadURL();
@@ -453,15 +424,16 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
     });
   }
 
-  Future<void> addCategory(String category) {
+  Future<void> addSubCategory(String subCategory) {
     return FirebaseFirestore.instance
-        .collection('Categories')
+        .collection('${widget.mainCategoryTitle}')
         .add({
           'Created AT': DateTime.now(),
           'User Email': currentUserEmail.toString(),
-          'Category Name': category,
-          'Category Image URL': imageUrl.toString(),
-          'Category Image Id': '$currentUserId -- ${_categoryController.text}',
+          'SubCategory Name': subCategory,
+          'SubCategory Image URL': imageUrl.toString(),
+          'SubCategory Image Id':
+              '$currentUserId -- ${_subCategoryController.text}',
           'priority': _priorityController.text,
         })
         .then(
@@ -474,19 +446,19 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
     print('Category data is fetching');
     try {
       await FirebaseFirestore.instance
-          .collection('Categories')
+          .collection(widget.mainCategoryTitle)
           .doc(widget.docId)
           .get()
           .then((ds) {
-        requestCategory = ds['Category Name'];
-        requestCategoryImageURL = ds['Category Image URL'];
+        requestSubCategory = ds['SubCategory Name'];
+        requestSubCategoryImageURL = ds['SubCategory Image URL'];
         categoryPriority = ds['priority'];
       });
       setState(() {
-        requestCategory = requestCategory;
-        requestCategoryImageURL = requestCategoryImageURL;
-        imageUrl = requestCategoryImageURL;
-        _categoryController.text = requestCategory;
+        requestSubCategory = requestSubCategory;
+        requestSubCategoryImageURL = requestSubCategoryImageURL;
+        imageUrl = requestSubCategoryImageURL;
+        _subCategoryController.text = requestSubCategory;
         _priorityController.text = categoryPriority;
       });
     } catch (e) {
@@ -496,18 +468,19 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
 
   Future<void> updateData(id, String category, String categoryImageUrl) {
     return FirebaseFirestore.instance
-        .collection('Categories')
+        .collection(widget.mainCategoryTitle)
         .doc(id)
         .update({
           'Created AT': DateTime.now(),
           'User Email': currentUserEmail.toString(),
-          'Category Name': category,
-          'Category Image URL': categoryImageUrl,
-          'Category Image Id': '$currentUserId -- ${_categoryController.text}',
+          'SubCategory Name': category,
+          'SubCategory Image URL': categoryImageUrl,
+          'SubCategory Image Id':
+              '$currentUserId -- ${_subCategoryController.text}',
           'priority': _priorityController.text,
         })
-        .then((value) => print('Data deleted '))
-        .catchError((error) => print('Failed to delete Data $error'));
+        .then((value) => print('Data Update Successfully '))
+        .catchError((error) => print('Failed to Update Data $error'));
   }
 
   @override
@@ -529,8 +502,8 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
               children: <TextSpan>[
                 TextSpan(
                     text: widget.isCallForUpdate
-                        ? 'Update category'
-                        : 'Create new category',
+                        ? 'Update SubCategory'
+                        : 'Create new SubCategory',
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 20.0,
@@ -626,14 +599,14 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                 visible: widget.isCallForUpdate,
                 child: Column(
                   children: [
-                    requestCategoryImageURL.isNotEmpty
+                    requestSubCategoryImageURL.isNotEmpty
                         ? Stack(
                             alignment: Alignment.center,
                             children: [
                               image == null
                                   ? ClipOval(
                                       child: Image.network(
-                                        requestCategoryImageURL,
+                                        requestSubCategoryImageURL,
                                         fit: BoxFit.fill,
                                         width: 100,
                                         height: 100,
@@ -726,7 +699,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                           ),
 
                           hintText: widget.isCallForUpdate
-                              ? requestCategory
+                              ? requestSubCategory
                               : 'Enter Request Category',
                           labelText: 'Request Category',
 //                           hintStyle: TextStyle(color: ),
@@ -738,7 +711,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                           ),
                           prefixText: '  ',
                         ),
-                        controller: _categoryController,
+                        controller: _subCategoryController,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please Enter category';
@@ -797,7 +770,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
               MaterialButton(
                   onPressed: widget.isCallForUpdate
                       ? () async {
-                          if (requestCategoryImageURL != 'NULL') {
+                          if (requestSubCategoryImageURL != 'NULL') {
                           } else if (image == null) {
                             await Fluttertoast.showToast(
                               msg: 'Select an image', // message
@@ -808,11 +781,11 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                           }
 
                           if (_formKey.currentState!.validate()) {
-                            if (requestCategoryImageURL != 'NULL') {
+                            if (requestSubCategoryImageURL != 'NULL') {
                               await updateData(
                                   widget.docId,
-                                  _categoryController.text,
-                                  requestCategoryImageURL);
+                                  _subCategoryController.text,
+                                  requestSubCategoryImageURL);
                               setState(() {
                                 _isUploading = false;
                               });
@@ -823,7 +796,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                               await uploadNewImage(_imagePath);
                               await updateData(
                                   widget.docId,
-                                  _categoryController.text,
+                                  _subCategoryController.text,
                                   imageUrl.toString());
                               setState(() {
                                 _isUploading = false;
@@ -838,7 +811,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                             );
                             SystemChannels.textInput
                                 .invokeMethod('TextInput.hide');
-                            _categoryController.clear();
+                            _subCategoryController.clear();
                             Navigator.pop(context);
                           }
                         }
@@ -858,7 +831,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                             });
 
                             await uploadImage(_imagePath);
-                            await addCategory(_categoryController.text);
+                            await addSubCategory(_subCategoryController.text);
                             await Fluttertoast.showToast(
                               msg: 'Category created successfully', // message
                               toastLength: Toast.LENGTH_SHORT, // length
@@ -867,7 +840,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                             );
                             SystemChannels.textInput
                                 .invokeMethod('TextInput.hide');
-                            _categoryController.clear();
+                            _subCategoryController.clear();
                             Navigator.pop(context);
                           }
                         },

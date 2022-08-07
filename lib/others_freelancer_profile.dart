@@ -195,10 +195,14 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => ChatScreen(
+                                            title: widget.userName,
+                                            requestCategory:
+                                                widget.requestCategory,
+                                            userEmail: widget.userEmail,
                                             name: widget.userName,
                                             receiverEmail: widget.userEmail,
                                             imagePath: _profileImage,
-                                            isChartHistorySave: true,
+                                            isSpecial: false,
                                           ),
                                         ),
                                       );
@@ -237,10 +241,13 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ChatScreen(
+                                    title: widget.userName,
+                                    requestCategory: widget.requestCategory,
+                                    userEmail: widget.userEmail,
                                     name: widget.userName,
                                     receiverEmail: widget.userEmail,
                                     imagePath: _profileImage,
-                                    isChartHistorySave: true,
+                                    isSpecial: false,
                                   ),
                                 ),
                               );

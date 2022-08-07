@@ -75,9 +75,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       await storage.delete(key: 'uid'),
                       await saveAdminLogin(false),
                       // ignore: avoid_print
-                      print('signout called'),
+                      print('SignOut called'),
                       await Fluttertoast.showToast(
-                        msg: 'Admin Logout Sucessfully', // message
+                        msg: 'Admin Logout Successfully', // message
                         toastLength: Toast.LENGTH_SHORT, // length
                         gravity: ToastGravity.BOTTOM, // location
                         backgroundColor: Colors.green,

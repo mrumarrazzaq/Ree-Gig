@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class AdminRequestScreen extends StatefulWidget {
@@ -9,11 +12,22 @@ class AdminRequestScreen extends StatefulWidget {
 }
 
 class _AdminRequestScreenState extends State<AdminRequestScreen> {
-  final Stream<QuerySnapshot> _registerdRequests =
-      FirebaseFirestore.instance.collection('Requests').snapshots();
+  final Stream<QuerySnapshot> _registeredRequests = FirebaseFirestore.instance
+      .collection('Requests')
+      .orderBy('Created AT', descending: true)
+      .snapshots();
+  Future<void> deleteData(id) {
+    return FirebaseFirestore.instance
+        .collection('Requests')
+        .doc(id)
+        .delete()
+        .then((value) => print('Data deleted '))
+        .catchError((error) => print('Failed to delete Data $error'));
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('Request Screen Bulid Running.....');
+    print('Request Screen Build Running.....');
     return Scaffold(
       backgroundColor: neuColor,
       appBar: AppBar(
@@ -43,7 +57,7 @@ class _AdminRequestScreenState extends State<AdminRequestScreen> {
         shrinkWrap: true,
         children: [
           StreamBuilder<QuerySnapshot>(
-              stream: _registerdRequests,
+              stream: _registeredRequests,
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -68,33 +82,46 @@ class _AdminRequestScreenState extends State<AdminRequestScreen> {
                 snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map id = document.data() as Map<String, dynamic>;
                   storeRequests.add(id);
-//                  print('==============================================');
-//                  print(storeRequests);
-//                  print('Document id : ${document.id}');
                   id['id'] = document.id;
                 }).toList();
-                print('Total Registerd Requests ${storeRequests.length}');
+                print('Total Registered Requests ${storeRequests.length}');
                 saveRequests(storeRequests.length.toDouble());
                 return Column(
-//                            shrinkWrap: true,
                   children: [
                     storeRequests.isEmpty
                         ? const Text('No User find')
                         : Container(),
                     for (int i = 0; i < storeRequests.length; i++) ...[
-                      CustomContainer(
-                        userName: storeRequests[i]['User Name'],
-                        userEmail: storeRequests[i]['User Email'],
-                        userProfileUrl: storeRequests[i]['Profile Image URL'],
-                        requestCategory: storeRequests[i]['Selected Category'],
-                        title: storeRequests[i]['Request Title'],
-                        description: storeRequests[i]['Request Description'],
-                        imagePath: storeRequests[i]['Request Image URL'],
-                        location: storeRequests[i]['Current Address'],
-                        imageType: 'Network',
-                        innerBorder: 20.0,
-                        smallBoxWidth: 110,
-                        smallBoxHeight: 80,
+                      SwipeActionCell(
+                        key: ObjectKey(storeRequests[i]['Created AT']),
+                        child: CustomContainer(
+                          userName: storeRequests[i]['User Name'],
+                          userEmail: storeRequests[i]['User Email'],
+                          userProfileUrl: storeRequests[i]['Profile Image URL'],
+                          requestCategory: storeRequests[i]
+                              ['Selected Category'],
+                          title: storeRequests[i]['Request Title'],
+                          description: storeRequests[i]['Request Description'],
+                          imagePath: storeRequests[i]['Request Image URL'],
+                          location: storeRequests[i]['Current Address'],
+                          imageType: 'Network',
+                          innerBorder: 20.0,
+                          smallBoxWidth: 110,
+                          smallBoxHeight: 80,
+                        ),
+                        trailingActions: [
+                          SwipeAction(
+                            title: "Delete",
+                            style: TextStyle(fontSize: 12, color: whiteColor),
+                            color: Colors.red,
+                            icon: Icon(Icons.delete, color: whiteColor),
+                            onTap: (CompletionHandler handler) async {
+                              openDeleteDialog(storeRequests[i]['id']);
+
+                              setState(() {});
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ],
@@ -104,6 +131,68 @@ class _AdminRequestScreenState extends State<AdminRequestScreen> {
       ),
     );
   }
+
+  openDeleteDialog(String id) => showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setState) {
+            var width = MediaQuery.of(context).size.width;
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              contentPadding: const EdgeInsets.only(top: 10.0),
+              title: const Center(child: Text('Delete Category')),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: width,
+                  height: 40.0,
+                  child: Center(
+                      child: Column(
+                    children: const [
+                      Text('Do you want to delete request'),
+                      Text('Deleted request cannot be recovered',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 10,
+                              color: Colors.red)),
+                    ],
+                  )),
+                ),
+              ),
+              actions: [
+                //CANCEL Button
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: Text(
+                    'CANCEL',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+                //CREATE Button
+                TextButton(
+                  onPressed: () async {
+                    //Delete a task
+                    await deleteData(id);
+                    await Fluttertoast.showToast(
+                      msg: 'Request delete successfully', // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM, // location
+                      backgroundColor: Colors.green,
+                    );
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: const Text(
+                    'DELETE',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
 }
 
 class CustomContainer extends StatefulWidget {

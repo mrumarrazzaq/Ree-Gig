@@ -95,7 +95,7 @@ class CustomPoster extends StatelessWidget {
   Timestamp timeStamp;
   @override
   Widget build(BuildContext context) {
-    String howManyAgo = 'error';
+    String howManyAgo = 'min ago';
     int what = 0;
     DateTime dt = timeStamp.toDate();
     DateTime now = DateTime.now();

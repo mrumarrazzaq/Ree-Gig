@@ -40,6 +40,7 @@ dependencies:
   flutter_chat_bubble: ^2.0.0
 
   flutter_switch: ^0.3.2
+  flutter_swipe_action_cell: ^3.0.4
 
 
 

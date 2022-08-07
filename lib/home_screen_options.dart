@@ -16,11 +16,11 @@ class HomeScreenOptions extends StatefulWidget {
 }
 
 class _HomeScreenOptionsState extends State<HomeScreenOptions> {
-  final Stream<QuerySnapshot> _dailyUpdated =
-      FirebaseFirestore.instance.collection('Requests').snapshots();
-  // String _imagePath = '';
-  // File? image;
-  // var imageUrl;
+  final Stream<QuerySnapshot> _dailyUpdated = FirebaseFirestore.instance
+      .collection('Requests')
+      .orderBy('Created AT', descending: true)
+      .snapshots();
+
   bool _isVisibleBottomNavigation = false;
   readUserMode() async {
     var _value = await readMode();
@@ -48,6 +48,8 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
 
   @override
   Widget build(BuildContext context) {
+    print("================");
+    print(widget.title);
     return Scaffold(
       appBar: AppBar(
         title: const Text.rich(
@@ -61,16 +63,6 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
             ],
           ),
         ),
-//        actions: const [
-//          IconButton(
-//            icon: Icon(
-//              Icons.settings_outlined,
-//              color: Colors.white,
-//            ),
-//            onPressed: null,
-////                () => Scaffold.of(context).openDrawer()
-//          ),
-//        ],
       ),
       body: Stack(
         children: [
@@ -119,39 +111,77 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
                       padding: const EdgeInsets.only(bottom: 100.0),
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            HomeCircularOptions(title: '1000'),
-                            HomeCircularOptions(title: '1001'),
-                            HomeCircularOptions(title: '1002'),
-                            HomeCircularOptions(title: '1003'),
-                            HomeCircularOptions(title: '1004'),
-                            HomeCircularOptions(title: '1005'),
-                            HomeCircularOptions(title: '1006'),
-                            HomeCircularOptions(title: '1007'),
-                            HomeCircularOptions(title: '1008'),
-                            Container(
-                              width: 50,
-                              height: 50,
-                              margin: const EdgeInsets.only(
-                                  right: 10.0, bottom: 20.0),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              child: IconButton(
-                                onPressed: () {
-                                  modalBottomSheetMenu();
-                                },
-                                icon: const Icon(
-                                  Icons.add,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection(widget.title)
+                                .orderBy('priority', descending: false)
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print('Something went wrong');
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator(
+                                  color: lightPurple,
+                                  strokeWidth: 2.0,
+                                ));
+                              }
+                              final List storeSubCategories = [];
+
+                              snapshot.data!.docs
+                                  .map((DocumentSnapshot document) {
+                                Map id =
+                                    document.data() as Map<String, dynamic>;
+                                storeSubCategories.add(id);
+                                id['id'] = document.id;
+                              }).toList();
+                              return Row(
+                                children: [
+                                  storeSubCategories.isEmpty
+                                      ? const Text('No SubCategory Find')
+                                      : Container(),
+                                  for (int i = 0;
+                                      i < storeSubCategories.length;
+                                      i++) ...[
+                                    HomeCircularOptions(
+                                        categoryTitle: widget.title,
+                                        subCategoryTitle: storeSubCategories[i]
+                                            ['SubCategory Name'],
+                                        imageUrl: storeSubCategories[i]
+                                            ['SubCategory Image URL']),
+//                      CustomPoster(
+//                      name: storeRequests[i]['User Name'],
+//                      email: storeRequests[i]['User Email'],
+//                      url: storeRequests[i]['Profile Image URL'],
+//                      category: storeRequests[i]['Selected Category'],
+//                      requestTitle: storeRequests[i]['Request Title'],
+//                      description: storeRequests[i]['Request Description'],
+//                      imagePath: storeRequests[i]['Request Image URL'],
+//                      location: storeRequests[i]['Current Address'],
+//                      imageType: 'Network',
+//                      ),
+                                  ],
+                                ],
+                              );
+                            }),
+
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     HomeCircularOptions(title: '1000'),
+                        //     HomeCircularOptions(title: '1001'),
+                        //     HomeCircularOptions(title: '1002'),
+                        //     HomeCircularOptions(title: '1003'),
+                        //     HomeCircularOptions(title: '1004'),
+                        //     HomeCircularOptions(title: '1005'),
+                        //     HomeCircularOptions(title: '1006'),
+                        //     HomeCircularOptions(title: '1007'),
+                        //     HomeCircularOptions(title: '1008'),
+                        //   ],
+                        // ),
                       ),
                     ),
                   ],
@@ -222,53 +252,10 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
                                     smallBoxWidth: 110,
                                     smallBoxHeight: 80)
                                 : Container(),
-//                      CustomPoster(
-//                      name: storeRequests[i]['User Name'],
-//                      email: storeRequests[i]['User Email'],
-//                      url: storeRequests[i]['Profile Image URL'],
-//                      category: storeRequests[i]['Selected Category'],
-//                      requestTitle: storeRequests[i]['Request Title'],
-//                      description: storeRequests[i]['Request Description'],
-//                      imagePath: storeRequests[i]['Request Image URL'],
-//                      location: storeRequests[i]['Current Address'],
-//                      imageType: 'Network',
-//                      ),
                           ],
                         ],
                       );
                     }),
-//                ListView(
-////                  shrinkWrap: true,
-//                  children: [
-//                    CustumContainer(
-//                        title: 'Mobile Design Team',
-//                        description:
-//                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-//                        imagePath: '',
-//                        caption: 'USA',
-//                        innerBorder: 20.0,
-//                        smallBoxWidth: 110,
-//                        smallBoxHeight: 80),
-//                    CustumContainer(
-//                        title: 'Mobile Design Team',
-//                        description:
-//                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-//                        imagePath: '',
-//                        innerBorder: 20.0,
-//                        caption: 'Jamika',
-//                        smallBoxWidth: 110,
-//                        smallBoxHeight: 80),
-//                    CustumContainer(
-//                        title: 'Mobile Design Team',
-//                        description:
-//                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-//                        imagePath: '',
-//                        caption: 'Abudabi',
-//                        innerBorder: 20.0,
-//                        smallBoxWidth: 110,
-//                        smallBoxHeight: 80),
-//                  ],
-//                ),
               ),
             ),
           ),
@@ -279,103 +266,18 @@ class _HomeScreenOptionsState extends State<HomeScreenOptions> {
           child: const CustomNavigationBar()),
     );
   }
-
-  modalBottomSheetMenu() {
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              height: 250.0,
-              color: Colors.transparent,
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30.0),
-                        topRight: Radius.circular(30.0))),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text('Add New Item',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20.0)),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // pickImage(ImageSource.gallery);
-                      },
-                      child: CircleAvatar(
-                        // radius: 50.0,
-                        minRadius: 50.0,
-                        backgroundColor: Colors.grey[400],
-                        child: Icon(
-                          Icons.add,
-                          size: 50.0,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          });
-        });
-    //  pickImage(ImageSource source) async {
-    //   try {
-    //     final image = await ImagePicker().pickImage(source: source);
-    //     if (image == null) return;
-    //
-    //     final imageTemporary = File(image.path);
-    //     setState(() {
-    //       this.image = imageTemporary;
-    //     });
-    //     _imagePath = image.path;
-    //
-    //     setState(() {
-    //
-    //     });
-    //     print('------------------------------------');
-    //     print('Image path : $_imagePath');
-    //
-    //     // ignore: unused_catch_clause
-    //   } catch (e) {
-    //     print('Pick image from gallery fail');
-    //   }
-    // }
-    // uploadImage(String path) async {
-    //   print('Image is Uploading...');
-    //   FirebaseStorage storage = FirebaseStorage.instance;
-    //   Reference ref = storage
-    //       .ref()
-    //       .child("Category Images/$currentUserId -- ${_categoryController.text}");
-    //   UploadTask uploadTask = ref.putFile(File(path));
-    //   await uploadTask.whenComplete(() async {
-    //     String url = await ref.getDownloadURL();
-    //     print('----------------------------------');
-    //     print('Image URL : $url');
-    //     print('----------------------------------');
-    //
-    //     _isUploading = false;
-    //     setState(() {
-    //       imageUrl = url;
-    //     });
-    //   }).catchError((onError) {
-    //     print('---------------------------------------');
-    //     print('Error while uploading image');
-    //     print(onError);
-    //     print('---------------------------------------');
-    //   });
-    // }
-  }
 }
 
 class HomeCircularOptions extends StatelessWidget {
-  HomeCircularOptions({Key? key, required this.title}) : super(key: key);
-  String title;
+  HomeCircularOptions(
+      {Key? key,
+      required this.categoryTitle,
+      required this.subCategoryTitle,
+      required this.imageUrl})
+      : super(key: key);
+  String categoryTitle;
+  String subCategoryTitle;
+  String imageUrl;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -385,72 +287,100 @@ class HomeCircularOptions extends StatelessWidget {
             height: 50,
             width: 50,
             margin: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: Image.network(imageUrl),
+            ),
             decoration: BoxDecoration(
               color: whiteColor,
               borderRadius: const BorderRadius.all(Radius.circular(15)),
             ),
           ),
           const SizedBox(height: 5.0),
-          Text(title, style: TextStyle(color: whiteColor)),
+          Text(subCategoryTitle, style: TextStyle(color: whiteColor)),
         ],
       ),
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                RequestFillerBySubCategory(subCategoryTitle: subCategoryTitle),
+          ),
+        );
+      },
     );
   }
 }
 
-//class SearchField extends StatelessWidget {
-////  final String title;
-//  final String hint;
-////  final TextEditingController? controller;
-//  final Widget? widget;
-//
-//  SearchField({required this.hint, this.widget});
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container(
-//      margin: const EdgeInsets.only(top: 16.0),
-//      child: Container(
-//        height: 52.0,
-//        margin: EdgeInsets.only(top: 8.0),
-//        decoration: BoxDecoration(
-//          border: Border.all(color: Colors.white, width: 1.0),
-//          borderRadius: BorderRadius.circular(50.0),
-//        ),
-//        child: Row(
-//          children: [
-//            Expanded(
-//              child: Padding(
-//                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-//                child: TextFormField(
-//                  autofocus: false,
-//                  decoration: InputDecoration(
-//                      hintText: hint,
-//                      hintStyle: TextStyle(color: whiteColor),
-//                      fillColor: lightPurple,
-//                      prefixIcon: const Icon(Icons.search),
-//                      prefixIconColor: whiteColor,
-//                      focusedBorder: const UnderlineInputBorder(
-//                        borderSide: BorderSide(
-//                          color: Colors.white,
-//                          width: 0,
-//                        ),
-//                      ),
-//                      enabledBorder: const UnderlineInputBorder(
-//                        borderSide: BorderSide(
-//                          color: Colors.white,
-//                          width: 0,
-//                        ),
-//                      )),
-//                ),
-//              ),
-//            ),
-//            Container(
-//              child: widget,
-//            ),
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}
+class RequestFillerBySubCategory extends StatefulWidget {
+  RequestFillerBySubCategory({Key? key, required this.subCategoryTitle})
+      : super(key: key);
+  String subCategoryTitle;
+  @override
+  State<RequestFillerBySubCategory> createState() =>
+      _RequestFillerBySubCategoryState();
+}
+
+class _RequestFillerBySubCategoryState
+    extends State<RequestFillerBySubCategory> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.subCategoryTitle),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('Requests')
+              .orderBy('Created AT', descending: true)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              print('Something went wrong');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                  child: CircularProgressIndicator(
+                color: lightPurple,
+                strokeWidth: 2.0,
+              ));
+            }
+            final List storeRequests = [];
+
+            snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map id = document.data() as Map<String, dynamic>;
+              storeRequests.add(id);
+              id['id'] = document.id;
+            }).toList();
+            return ListView(
+              children: [
+                storeRequests.isEmpty
+                    ? const Text('No Request Find')
+                    : Container(),
+                for (int i = 0; i < storeRequests.length; i++) ...[
+                  storeRequests[i]['Selected SubCategory'] ==
+                          widget.subCategoryTitle
+                      ? CustomContainer1(
+                          userName: storeRequests[i]['User Name'],
+                          userEmail: storeRequests[i]['User Email'],
+                          userProfileUrl: storeRequests[i]['Profile Image URL'],
+                          requestCategory: storeRequests[i]
+                              ['Selected Category'],
+                          title: storeRequests[i]['Request Title'],
+                          description: storeRequests[i]['Request Description'],
+                          imagePath: storeRequests[i]['Request Image URL'],
+                          imageType: 'Network',
+                          location: storeRequests[i]['Current Address'],
+                          innerBorder: 20.0,
+                          smallBoxWidth: 110,
+                          smallBoxHeight: 80)
+                      : Container(),
+                ],
+              ],
+            );
+          }),
+    );
+  }
+}

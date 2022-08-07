@@ -931,10 +931,13 @@ class CustomRecentChatsTile extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ChatScreen(
+                title: '',
+                requestCategory: '',
+                userEmail: '',
                 name: name,
                 imagePath: imagePath,
                 receiverEmail: email,
-                isChartHistorySave: false,
+                isSpecial: false,
               ),
             ));
       },

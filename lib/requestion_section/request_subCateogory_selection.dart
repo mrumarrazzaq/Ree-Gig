@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class RequestSubCategorySelection extends StatefulWidget {
-  const RequestSubCategorySelection({Key? key}) : super(key: key);
-
+  RequestSubCategorySelection({Key? key, required this.category})
+      : super(key: key);
+  String category;
   @override
   State<RequestSubCategorySelection> createState() =>
       _RequestSubCategorySelectionState();
@@ -37,7 +38,7 @@ class _RequestSubCategorySelectionState
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('Categories')
+              .collection(widget.category)
               .orderBy('priority', descending: false)
               .snapshots(),
           builder:
@@ -72,11 +73,11 @@ class _RequestSubCategorySelectionState
                         onTap: () {
                           setState(() {
                             selectedSubCategory =
-                                storeSubCategories[i]['Category Name'];
+                                storeSubCategories[i]['SubCategory Name'];
                           });
                           Navigator.pop(context);
                         },
-                        title: Text(storeSubCategories[i]['Category Name']),
+                        title: Text(storeSubCategories[i]['SubCategory Name']),
                       ),
                     ),
                   ],

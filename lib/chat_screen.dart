@@ -6,22 +6,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:ree_gig/others_freelancer_profile.dart';
+import 'package:ree_gig/post_details.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({
     Key? key,
+    required this.title,
+    required this.requestCategory,
+    required this.userEmail,
     required this.name,
     required this.receiverEmail,
     required this.imagePath,
-    this.isChartHistorySave = false,
+    this.isSpecial = false,
   }) : super(key: key);
+  String title;
+  String requestCategory;
+  String userEmail;
   String name;
   String imagePath;
   String receiverEmail;
-  bool isChartHistorySave;
+  bool isSpecial;
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -31,6 +39,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final _fireStore = FirebaseFirestore.instance;
   final TextEditingController _massageController = TextEditingController();
   var message;
+  bool _isJobCompleted = false;
+  IconData icon = Icons.access_time;
+  Color color = Colors.red;
+  String progress = 'Active';
   saveMassages(String time, String massage) async {
     await FirebaseFirestore.instance
         .collection('Chats')
@@ -78,9 +90,29 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  String _senderEmail = '';
-  String _receiverEmail = '';
+  updateSellerDataFromFirebase(id, bool value) {
+    return FirebaseFirestore.instance
+        .collection('Seller ${widget.userEmail}')
+        .doc(id)
+        .update({
+          'Is Job Complete': value,
+        })
+        .then((value) => log('Data Updated $id'))
+        .catchError((error) => log('Failed to Update isCompleted $error'));
+  }
 
+  updateBuyerDataFromFirebase(id, bool value) {
+    return FirebaseFirestore.instance
+        .collection('Buyer $currentUserEmail')
+        .doc(id)
+        .update({
+          'Is Job Complete': value,
+        })
+        .then((value) => log('Data Updated $id'))
+        .catchError((error) => log('Failed to Update isCompleted $error'));
+  }
+
+//--------------------------------------------------------------//
   @override
   void initState() {
 //    if (widget.isChartHistorySave) {
@@ -108,86 +140,190 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Stack(
         children: [
           Container(
-              color: darkPurple,
-              width: double.infinity,
-              height: 120,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: GestureDetector(
-                  child: ListTile(
-                    leading: widget.imagePath != ''
-                        ? CircleAvatar(
-                            radius: 30.0,
-                            backgroundImage: NetworkImage(widget.imagePath),
-                            backgroundColor: lightPurple.withOpacity(0.4),
-                          )
-                        : CircleAvatar(
-                            radius: 30.0,
-                            foregroundImage:
-                                const AssetImage('icons/default_profile.png'),
-                            backgroundColor: lightPurple.withOpacity(0.4),
-                          ),
-                    title: Text(widget.name,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: whiteColor)),
-                    dense: true,
-                    subtitle: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('User Data')
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            log('Something went wrong');
-                          }
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                                child: CircularProgressIndicator(
-                              color: lightPurple,
-                              strokeWidth: 2.0,
-                            ));
-                          }
-
-                          final List storedMassages = [];
-
-                          snapshot.data!.docs.map((DocumentSnapshot document) {
-                            Map id = document.data() as Map<String, dynamic>;
-                            if (widget.receiverEmail == document.id) {
-                              log(document.id);
-                              storedMassages.add(id);
-                              id['id'] = document.id;
+            color: darkPurple,
+            width: double.infinity,
+            height: 200,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: GestureDetector(
+                    child: ListTile(
+                      leading: widget.imagePath != ''
+                          ? CircleAvatar(
+                              radius: 30.0,
+                              backgroundImage: NetworkImage(widget.imagePath),
+                              backgroundColor: lightPurple.withOpacity(0.4),
+                            )
+                          : CircleAvatar(
+                              radius: 30.0,
+                              foregroundImage:
+                                  const AssetImage('icons/default_profile.png'),
+                              backgroundColor: lightPurple.withOpacity(0.4),
+                            ),
+                      title: Text(widget.name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: whiteColor)),
+                      dense: true,
+                      subtitle: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('User Data')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              log('Something went wrong');
                             }
-                          }).toList();
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: lightPurple,
+                                strokeWidth: 2.0,
+                              ));
+                            }
 
-                          return Text(storedMassages[0]['User Current Status'],
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: whiteColor));
-                        }),
-                    // Text('online', style: TextStyle(color: whiteColor)),
-                    trailing: IconButton(
-                        icon: Icon(Icons.call, color: whiteColor),
-                        onPressed: () {}),
+                            final List storedMassages = [];
+
+                            snapshot.data!.docs
+                                .map((DocumentSnapshot document) {
+                              Map id = document.data() as Map<String, dynamic>;
+                              if (widget.receiverEmail == document.id) {
+                                log(document.id);
+                                storedMassages.add(id);
+                                id['id'] = document.id;
+                              }
+                            }).toList();
+
+                            return Text(
+                                storedMassages[0]['User Current Status'],
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: whiteColor));
+                          }),
+                      // Text('online', style: TextStyle(color: whiteColor)),
+                      trailing: IconButton(
+                          icon: Icon(Icons.call, color: whiteColor),
+                          onPressed: () {}),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FreelancerProfileScreen(
+                              userName: widget.name,
+                              userEmail: widget.receiverEmail,
+                              userProfileUrl: widget.imagePath,
+                              requestCategory: 'Special Category',
+                            ),
+                          ));
+                    },
                   ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FreelancerProfileScreen(
-                            userName: widget.name,
-                            userEmail: widget.receiverEmail,
-                            userProfileUrl: widget.imagePath,
-                            requestCategory: 'Special Category',
-                          ),
-                        ));
-                  },
                 ),
-              )),
+                Visibility(
+                  visible: widget.isSpecial,
+                  child: ListTile(
+                    dense: true,
+                    title: TextButton(
+                      onPressed: () {
+                        if (!_isJobCompleted) {
+                          openJobCompletionDialog();
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: 'Job Already Completed', // message
+                            toastLength: Toast.LENGTH_SHORT, // length
+                            gravity: ToastGravity.BOTTOM, // location
+                            backgroundColor: Colors.grey,
+                          );
+                        }
+                      },
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Buyer $currentUserEmail')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              log('Something went wrong');
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: lightPurple,
+                                strokeWidth: 2.0,
+                              ));
+                            }
+
+                            final List storedData = [];
+
+                            snapshot.data!.docs
+                                .map((DocumentSnapshot document) {
+                              Map id = document.data() as Map<String, dynamic>;
+
+                              storedData.add(id);
+                              id['id'] = document.id;
+                            }).toList();
+                            for (int i = 0; i < storedData.length; i++) {
+                              if (storedData[i]['Request Title'] ==
+                                      widget.title &&
+                                  storedData[i]['Request Category'] ==
+                                      widget.requestCategory &&
+                                  storedData[i]['Request Seller Email'] ==
+                                      widget.userEmail &&
+                                  storedData[i]['Is Job Complete'] == true) {
+                                log('yes isJobCompleted true');
+
+                                _isJobCompleted = true;
+                              }
+                              if (storedData[i]['Request Title'] ==
+                                      widget.title &&
+                                  storedData[i]['Request Category'] ==
+                                      widget.requestCategory &&
+                                  storedData[i]['Request Seller Email'] ==
+                                      widget.receiverEmail &&
+                                  storedData[i]['Is Job Complete'] == false) {
+                                log('yes isJobCompleted true');
+
+                                _isJobCompleted = false;
+                              }
+                            }
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Job Status is   ',
+                                  style: TextStyle(
+                                      color: whiteColor, fontSize: 15),
+                                ),
+                                Icon(
+                                    _isJobCompleted
+                                        ? Icons.check
+                                        : Icons.access_time,
+                                    color: _isJobCompleted
+                                        ? Colors.green
+                                        : Colors.red),
+                                Text(_isJobCompleted ? 'Completed' : 'Active',
+                                    style: TextStyle(
+                                      color: _isJobCompleted
+                                          ? Colors.green
+                                          : Colors.red,
+                                    )),
+                              ],
+                            );
+                          }),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(top: 85.0, bottom: 70.0),
+              padding: EdgeInsets.only(
+                  top: widget.isSpecial ? 130 : 85.0, bottom: 70.0),
               child: Container(
                 height: double.infinity,
                 decoration: BoxDecoration(
@@ -386,6 +522,79 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
+  openJobCompletionDialog() => showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setState) {
+            var width = MediaQuery.of(context).size.width;
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              contentPadding: const EdgeInsets.only(top: 10.0),
+              title: const Center(child: Text('Confirmation')),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: width,
+                  height: 80.0,
+                  child: Center(
+                      child: Column(
+                    children: const [
+                      Expanded(
+                        child: Text('JOB STATUS',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.fade)),
+                      ),
+                      Text('Is your job has been completed ?'),
+                      Text('You cannot change job status after completion ',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 11,
+                              color: Colors.red)),
+                    ],
+                  )),
+                ),
+              ),
+              actions: [
+                //CANCEL Button
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  child: Text(
+                    'CANCEL',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+                //CREATE Button
+                TextButton(
+                  onPressed: () async {
+                    await updateSellerDataFromFirebase(
+                        '${widget.userEmail} ${widget.title} ${widget.requestCategory}',
+                        true);
+                    await updateBuyerDataFromFirebase(
+                        '$currentUserEmail ${widget.title} ${widget.requestCategory}',
+                        true);
+                    Navigator.pop(context, true);
+                    Fluttertoast.showToast(
+                      msg: 'Job Completed Successfully', // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM, // location
+                      backgroundColor: Colors.green,
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'COMPLETED',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
 }
 
 class RightBubble extends StatelessWidget {

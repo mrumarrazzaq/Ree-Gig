@@ -489,7 +489,9 @@ class _RequestScreenState extends State<RequestScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RequestSubCategorySelection(),
+                          builder: (context) => RequestSubCategorySelection(
+                            category: selectedCategory,
+                          ),
                         ),
                       );
                     },
