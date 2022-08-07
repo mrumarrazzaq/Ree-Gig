@@ -7,7 +7,7 @@ import 'package:ree_gig/others_freelancer_profile.dart';
 import 'package:ree_gig/post_details.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/recent_chats.dart';
-import 'package:ree_gig/request_screen.dart';
+import 'package:ree_gig/requestion_section/request_screen.dart';
 
 Color dropColor = const Color(0xff737373);
 

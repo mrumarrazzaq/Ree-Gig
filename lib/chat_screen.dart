@@ -1,11 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:ree_gig/others_freelancer_profile.dart';
-import 'package:ree_gig/project_constants.dart';
-import 'package:ree_gig/projects_customs.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
+
+import 'package:ree_gig/others_freelancer_profile.dart';
+import 'package:ree_gig/project_constants.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({
@@ -25,21 +28,30 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final _firestore = FirebaseFirestore.instance;
-  TextEditingController _massageController = TextEditingController();
+  final _fireStore = FirebaseFirestore.instance;
+  final TextEditingController _massageController = TextEditingController();
   var message;
   saveMassages(String time, String massage) async {
-    await FirebaseFirestore.instance.collection('Chats').add({
-      'message': massage,
-      'Sender Email': currentUserEmail.toString(),
-      'Receiver Email': widget.receiverEmail,
-      'Created At': DateTime.now(),
-      'Time': time,
-    });
+    await FirebaseFirestore.instance
+        .collection('Chats')
+        .add({
+          'message': massage,
+          'Sender Email': currentUserEmail.toString(),
+          'Receiver Email': widget.receiverEmail,
+          'Created At': DateTime.now(),
+          'Time': time,
+        })
+        .then((value) => log('Massage Send Successfully'))
+        .onError((error, stackTrace) => log('Massage Not Send Successfully'));
 
-    print('-------------------------');
-    print('Massage Send Successfully');
-    print('-------------------------');
+    await FirebaseFirestore.instance
+        .collection('User Data')
+        .doc('${widget.receiverEmail}')
+        .update({
+          'Created At': DateTime.now(),
+        })
+        .then((value) => log('Update Successfully'))
+        .onError((error, stackTrace) => log('Update Failed'));
   }
 
   saveChatHistory(String time) async {
@@ -59,7 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void massagesStream() async {
-    await for (var snapshot in _firestore.collection('Chats').snapshots()) {
+    await for (var snapshot in _fireStore.collection('Chats').snapshots()) {
       for (var massages in snapshot.docs) {
         print(massages.data);
       }
@@ -126,7 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasError) {
-                            print('Something went wrong');
+                            log('Something went wrong');
                           }
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -142,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map id = document.data() as Map<String, dynamic>;
                             if (widget.receiverEmail == document.id) {
-                              print(document.id);
+                              log(document.id);
                               storedMassages.add(id);
                               id['id'] = document.id;
                             }
@@ -196,7 +208,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasError) {
-                            print('Something went wrong');
+                            log('Something went wrong');
                           }
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -316,6 +328,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: TextFormField(
+              maxLines: null,
               keyboardType: TextInputType.text,
               style: const TextStyle(color: Colors.white),
               cursorColor: Colors.white,

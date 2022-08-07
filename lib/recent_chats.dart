@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 
@@ -14,32 +15,6 @@ class RecentChats extends StatefulWidget {
 }
 
 class _RecentChatsState extends State<RecentChats> {
-//  String receiverEmail = '';
-//  String receiverName = '';
-//  String receiverProfileImageUrl = '';
-//  Timestamp timestamp = Timestamp.now();
-//  fetch() async {
-//    final user = FirebaseAuth.instance.currentUser;
-//    print(user!.email);
-//    print('-------------------------------------');
-//    print('Current user data is fetching');
-//    try {
-//      await FirebaseFirestore.instance
-//          .collection('Recent Chats ${currentUserEmail.toString()}')
-//          .doc(user.email)
-//          .get()
-//          .then((ds) {
-//        receiverEmail = ds['Receiver Email'];
-//        receiverName = ds['Receiver Name'];
-//        receiverProfileImageUrl = ds['Receiver profileImageUrl'];
-//        timestamp = ds['Created At'];
-//      });
-//      setState(() {});
-//    } catch (e) {
-//      print(e.toString());
-//    }
-//  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +68,7 @@ class _RecentChatsState extends State<RecentChats> {
                     StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('User Data')
+                            .orderBy('Created At', descending: true)
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -112,15 +88,9 @@ class _RecentChatsState extends State<RecentChats> {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map id = document.data() as Map<String, dynamic>;
                             recentMassages.add(id);
-//                  print('==============================================');
-//                  print(storeRequests);
-//                  print('Document id : ${document.id}');
                             id['id'] = document.id;
-//                            storedMassages.sort((a, b) => b.value["Created At"]
-//                                .compareTo(a.value["Created At"]));
                           }).toList();
                           return Column(
-//                            shrinkWrap: true,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [

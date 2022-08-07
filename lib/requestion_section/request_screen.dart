@@ -14,6 +14,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/utils/google_map.dart';
 
+import 'request_category_selection.dart';
+import 'request_subCateogory_selection.dart';
+
 class RequestScreen extends StatefulWidget {
   @override
   _RequestScreenState createState() => _RequestScreenState();
@@ -28,8 +31,8 @@ class _RequestScreenState extends State<RequestScreen> {
 
   List<bool> isVisible = [true, false, false];
   int selectedValue = 0;
-  String _selectedCategory = 'Select Category';
   bool _isLoading = false;
+  bool _isSubCategoryVisible = false;
   bool _isUpLoading = false;
   bool _isLocationGetting = false;
   String imagePath = '';
@@ -39,8 +42,8 @@ class _RequestScreenState extends State<RequestScreen> {
   String _currentLocation = 'Get Current Location';
   String _customLocation = 'Get Custom Location';
   File? image;
-
   String _uniqueId = '';
+
   List<String> categoriesList = [
     'Admin',
     'Finance & Account',
@@ -59,6 +62,79 @@ class _RequestScreenState extends State<RequestScreen> {
     'Fashion',
     'Others'
   ];
+  categoriesStreams() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('Categories')
+            .orderBy('priority', descending: false)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            print('Something went wrong');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child: CircularProgressIndicator(
+              color: lightPurple,
+              strokeWidth: 2.0,
+            ));
+          }
+          if (snapshot.hasData) {
+            final List storeCategories = [];
+            snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map id = document.data() as Map<String, dynamic>;
+              storeCategories.add(id);
+              id['id'] = document.id;
+            }).toList();
+            return Container();
+            //   Column(
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   children: [
+            //     storeCategories.isEmpty
+            //         ? const Text('No Category Find')
+            //         : Container(),
+            //     for (int i = 0;
+            //     i < storeCategories.length;
+            //     i++) ...[
+            //       categoriesList.add(storeCategories[i]['Category Name'])
+            //       // Text(storeCategories[i]['Category Name']),
+            //
+            //       // DropdownButton(
+            //       //   icon: Icon(
+            //       //     Icons.keyboard_arrow_down,
+            //       //     color: lightPurple,
+            //       //   ),
+            //       //   iconSize: 32,
+            //       //   elevation: 4,
+            //       //   underline: Container(
+            //       //     height: 0.0,
+            //       //   ),
+            //       //   items: categoriesList.map<DropdownMenuItem<String>>(
+            //       //     (String value) {
+            //       //       return DropdownMenuItem<String>(
+            //       //         value: value.toString(),
+            //       //         child: Text(value.toString()),
+            //       //       );
+            //       //     },
+            //       //   ).toList(),
+            //       //   onChanged: (String? newValue) {
+            //       //     setState(() {
+            //       //       _selectedCategory = newValue!;
+            //       //       print(newValue);
+            //       //     });
+            //       //   },
+            //       // ),
+            //     ],
+            //   ],
+            // );
+          }
+          return Center(
+              child: CircularProgressIndicator(
+            color: lightPurple,
+            strokeWidth: 2.0,
+          ));
+        });
+  }
 
   assignId() async {
     _uniqueId = await generateUniqueId();
@@ -186,9 +262,9 @@ class _RequestScreenState extends State<RequestScreen> {
       });
     } catch (e) {
       print(e);
-      print('Faild to get Address');
+      print('Failed to get Address');
       Fluttertoast.showToast(
-        msg: 'Faild to get Location Try again', // message
+        msg: 'Failed to get Location Try again', // message
         toastLength: Toast.LENGTH_SHORT, // length
         gravity: ToastGravity.BOTTOM, // location
         backgroundColor: Colors.grey,
@@ -196,10 +272,9 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
-  CollectionReference request =
-      FirebaseFirestore.instance.collection('Requests');
   Future<void> addRequest(String location) {
-    return request
+    return FirebaseFirestore.instance
+        .collection('Requests')
         .add({
           'Created AT': DateTime.now(),
           'User Email': currentUserEmail.toString(),
@@ -207,19 +282,19 @@ class _RequestScreenState extends State<RequestScreen> {
           'Profile Image URL': _profileImageURL,
           'Request Title': _titleController.text,
           'Request Description': _descriptionController.text,
-          'Selected Category': _selectedCategory,
+          'Selected Category': selectedCategory,
+          'Selected SubCategory': selectedSubCategory,
           'Current Address': location,
           'Request Image URL': imageUrl.toString(),
         })
         .then(
             (value) => print('Request Added Successfully : $currentUserEmail'))
-        .catchError((error) => print('Faild to Add Request $error'));
+        .catchError((error) => print('Failed to Add Request $error'));
   }
 
-  CollectionReference currentUserRequest =
-      FirebaseFirestore.instance.collection('$currentUserEmail Requests');
   Future<void> addCurrentUserRequest(String location) {
-    return currentUserRequest
+    return FirebaseFirestore.instance
+        .collection('$currentUserEmail Requests')
         .add({
           'Created AT': DateTime.now(),
           'User Email': currentUserEmail.toString(),
@@ -227,13 +302,14 @@ class _RequestScreenState extends State<RequestScreen> {
           'Profile Image URL': _profileImageURL,
           'Request Title': _titleController.text,
           'Request Description': _descriptionController.text,
-          'Selected Category': _selectedCategory,
+          'Selected Category': selectedCategory,
+          'Selected SubCategory': selectedSubCategory,
           'Current Address': location,
           'Request Image URL': imageUrl.toString(),
         })
         .then(
             (value) => print('Request Added Successfully : $currentUserEmail'))
-        .catchError((error) => print('Faild to Add Request $error'));
+        .catchError((error) => print('Failed to Add Request $error'));
   }
 
   fetch() async {
@@ -261,7 +337,6 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   void initState() {
     fetch();
-//    generateUniqueId();
     assignId();
     super.initState();
   }
@@ -283,263 +358,296 @@ class _RequestScreenState extends State<RequestScreen> {
           ),
         ),
       ),
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 8.0),
-              Text('Fill in your request',
-                  style: TextStyle(color: lightPurple, fontSize: 25)),
-              const SizedBox(height: 5),
-              Container(
-                color: lightPurple,
-                height: 5,
-                width: 180,
-              ),
-              const SizedBox(height: 8.0),
-              image != null
-                  ? ClipOval(
-                      child: Image.file(
-                        image!,
-                        fit: BoxFit.fill,
-                        width: 100,
-                        height: 100,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 8.0),
+            Text('Fill in your request',
+                style: TextStyle(color: lightPurple, fontSize: 25)),
+            const SizedBox(height: 5),
+            Container(
+              color: lightPurple,
+              height: 5,
+              width: 180,
+            ),
+            const SizedBox(height: 8.0),
+            image != null
+                ? ClipOval(
+                    child: Image.file(
+                      image!,
+                      fit: BoxFit.fill,
+                      width: 100,
+                      height: 100,
+                    ),
+                  )
+                : CircleAvatar(
+                    backgroundColor: lightPurple.withOpacity(0.4),
+                    radius: 50.0),
+            _isUpLoading == true
+                ? Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            width: 150,
+                            height: 95,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(12.0),
+                            )),
                       ),
-                    )
-                  : CircleAvatar(
-                      backgroundColor: lightPurple.withOpacity(0.4),
-                      radius: 50.0),
-              _isUpLoading == true
-                  ? Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Align(
+                      Positioned.fill(
+                        top: -10,
+                        child: Align(
                           alignment: Alignment.center,
-                          child: Container(
-                              width: 150,
-                              height: 95,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(12.0),
-                              )),
-                        ),
-                        Positioned.fill(
-                          top: -10,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator(
-                              color: lightPurple,
-                              backgroundColor: whiteColor,
-                            ),
+                          child: CircularProgressIndicator(
+                            color: lightPurple,
+                            backgroundColor: whiteColor,
                           ),
                         ),
-                        Positioned.fill(
-                          top: 58,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text('Uploading Image',
-                                style: TextStyle(color: whiteColor)),
-                          ),
+                      ),
+                      Positioned.fill(
+                        top: 58,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text('Uploading Image',
+                              style: TextStyle(color: whiteColor)),
                         ),
-                      ],
-                    )
-                  : Container(),
-              MyInputField(
-                icon: Icons.title,
-                hint: 'Enter Title',
-                controller: _titleController,
-                maxLenght: 30,
-              ),
-              MyInputField(
-                icon: Icons.description,
-                hint: 'Enter Description',
-                controller: _descriptionController,
-                maxLenght: 200,
-              ),
-              MyInputField(
+                      ),
+                    ],
+                  )
+                : Container(),
+            MyInputField(
+              icon: Icons.title,
+              hint: 'Enter Title',
+              controller: _titleController,
+              maxLenght: 30,
+            ),
+            MyInputField(
+              icon: Icons.description,
+              hint: 'Enter Description',
+              controller: _descriptionController,
+              maxLenght: 200,
+            ),
+            MyInputField(
                 icon: Icons.category,
-                hint: _selectedCategory,
-                widget: DropdownButton(
+                hint: selectedCategory,
+                widget: IconButton(
                   icon: Icon(
                     Icons.keyboard_arrow_down,
                     color: lightPurple,
                   ),
-                  iconSize: 32,
-                  elevation: 4,
-                  underline: Container(
-                    height: 0.0,
-                  ),
-                  items: categoriesList.map<DropdownMenuItem<String>>(
-                    (String value) {
-                      return DropdownMenuItem<String>(
-                        value: value.toString(),
-                        child: Text(value.toString()),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedCategory = newValue!;
-                      print(newValue);
-                    });
-                  },
-                ),
-              ),
-              RadioListTile<int>(
-                value: 0,
-                dense: true,
-                title: const Text('Get Current Location'),
-                secondary: const Text(''),
-                groupValue: selectedValue,
-                activeColor: lightPurple,
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = 0;
-                    isVisible[0] = true;
-                    isVisible[1] = false;
-                    isVisible[2] = false;
-                    _customLocation = 'Get Custom Location';
-                    mapLocation = 'Get Map Location';
-                    _currentLocationController.clear();
-                  });
-                },
-              ),
-              Visibility(
-                visible: isVisible[0],
-                child: ListTile(
-                  dense: true,
-                  iconColor: _currentLocation == 'Get Current Location'
-                      ? Colors.grey
-                      : Colors.green,
-                  leading: IconButton(
-                      onPressed: () async {
-                        await _determinePosition();
-                      },
-                      icon: const Icon(
-                        Icons.location_on,
-                        size: 30,
-                      )),
-                  title: Text(_currentLocation),
-                  trailing: _isLocationGetting
-                      ? SizedBox(
-                          height: 15.0,
-                          width: 15.0,
-                          child: CircularProgressIndicator(
-                              color: lightPurple, strokeWidth: 1.5),
-                        )
-                      : const SizedBox(height: 0, width: 0),
-                ),
-              ),
-              RadioListTile<int>(
-                value: 1,
-                dense: true,
-                title: const Text('Get Location by Map'),
-                secondary: const Text(''),
-                groupValue: selectedValue,
-                activeColor: lightPurple,
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = 1;
-                    isVisible[0] = false;
-                    isVisible[1] = true;
-                    isVisible[2] = false;
-                    _currentLocation = 'Get Current Location';
-                    _customLocation = 'Get Custom Location';
-                    _currentLocationController.clear();
-                  });
-                },
-              ),
-              Visibility(
-                visible: isVisible[1],
-                child: MaterialButton(
-                  color: lightPurple,
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GoogleMapService(),
+                        builder: (context) => RequestCategorySelection(),
                       ),
                     );
                   },
-                  child: Text('Open Google Map',
-                      style: TextStyle(color: whiteColor)),
+                )
+
+                // DropdownButton(
+                //   icon: Icon(
+                //     Icons.keyboard_arrow_down,
+                //     color: lightPurple,
+                //   ),
+                //   iconSize: 32,
+                //   elevation: 4,
+                //   underline: Container(
+                //     height: 0.0,
+                //   ),
+                //   items: categoriesList.map<DropdownMenuItem<String>>(
+                //     (String value) {
+                //       return DropdownMenuItem<String>(
+                //         value: value.toString(),
+                //         child: Text(value.toString()),
+                //       );
+                //     },
+                //   ).toList(),
+                //   onChanged: (String? newValue) {
+                //     setState(() {
+                //       _selectedCategory = newValue!;
+                //       print(newValue);
+                //     });
+                //   },
+                // ),
                 ),
-              ),
-              RadioListTile<int>(
-                value: 2,
+            Visibility(
+              visible: selectedCategory == "Select Category" ? false : true,
+              child: MyInputField(
+                  icon: Icons.category,
+                  hint: selectedSubCategory,
+                  widget: IconButton(
+                    icon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: lightPurple,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RequestSubCategorySelection(),
+                        ),
+                      );
+                    },
+                  )),
+            ),
+            RadioListTile<int>(
+              value: 0,
+              dense: true,
+              title: const Text('Get Current Location'),
+              secondary: const Text(''),
+              groupValue: selectedValue,
+              activeColor: lightPurple,
+              onChanged: (value) {
+                setState(() {
+                  selectedValue = 0;
+                  isVisible[0] = true;
+                  isVisible[1] = false;
+                  isVisible[2] = false;
+                  _customLocation = 'Get Custom Location';
+                  mapLocation = 'Get Map Location';
+                  _currentLocationController.clear();
+                });
+              },
+            ),
+            Visibility(
+              visible: isVisible[0],
+              child: ListTile(
                 dense: true,
-                title: const Text('Custom Location'),
-                secondary: const Text(''),
-                groupValue: selectedValue,
-                activeColor: lightPurple,
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = 2;
-                    isVisible[0] = false;
-                    isVisible[1] = false;
-                    isVisible[2] = true;
-                    _currentLocation = 'Get Current Location';
-                    mapLocation = 'Get Map Location';
-                  });
+                iconColor: _currentLocation == 'Get Current Location'
+                    ? Colors.grey
+                    : Colors.green,
+                leading: IconButton(
+                    onPressed: () async {
+                      await _determinePosition();
+                    },
+                    icon: const Icon(
+                      Icons.location_on,
+                      size: 30,
+                    )),
+                title: Text(_currentLocation),
+                trailing: _isLocationGetting
+                    ? SizedBox(
+                        height: 15.0,
+                        width: 15.0,
+                        child: CircularProgressIndicator(
+                            color: lightPurple, strokeWidth: 1.5),
+                      )
+                    : const SizedBox(height: 0, width: 0),
+              ),
+            ),
+            RadioListTile<int>(
+              value: 1,
+              dense: true,
+              title: const Text('Get Location by Map'),
+              secondary: const Text(''),
+              groupValue: selectedValue,
+              activeColor: lightPurple,
+              onChanged: (value) {
+                setState(() {
+                  selectedValue = 1;
+                  isVisible[0] = false;
+                  isVisible[1] = true;
+                  isVisible[2] = false;
+                  _currentLocation = 'Get Current Location';
+                  _customLocation = 'Get Custom Location';
+                  _currentLocationController.clear();
+                });
+              },
+            ),
+            Visibility(
+              visible: isVisible[1],
+              child: MaterialButton(
+                color: lightPurple,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GoogleMapService(),
+                    ),
+                  );
                 },
+                child: Text('Open Google Map',
+                    style: TextStyle(color: whiteColor)),
               ),
-              Visibility(
-                visible: isVisible[2],
-                child: MyInputField(
-                  icon: Icons.location_on,
-                  hint: 'Enter Location',
-                  controller: _currentLocationController,
-                  maxLenght: 40,
+            ),
+            RadioListTile<int>(
+              value: 2,
+              dense: true,
+              title: const Text('Custom Location'),
+              secondary: const Text(''),
+              groupValue: selectedValue,
+              activeColor: lightPurple,
+              onChanged: (value) {
+                setState(() {
+                  selectedValue = 2;
+                  isVisible[0] = false;
+                  isVisible[1] = false;
+                  isVisible[2] = true;
+                  _currentLocation = 'Get Current Location';
+                  mapLocation = 'Get Map Location';
+                });
+              },
+            ),
+            Visibility(
+              visible: isVisible[2],
+              child: MyInputField(
+                icon: Icons.location_on,
+                hint: 'Enter Location',
+                controller: _currentLocationController,
+                maxLenght: 40,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Stack(
+              alignment: Alignment.center,
+              fit: StackFit.passthrough,
+              children: [
+                Container(
+                  height: 150.0,
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: const Text('Upload your images \n ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold)),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: lightPurple),
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Stack(
-                alignment: Alignment.center,
-                fit: StackFit.passthrough,
-                children: [
-                  Container(
-                    height: 150.0,
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: const Text('Upload your images \n ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold)),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: lightPurple),
-                      borderRadius: BorderRadius.circular(20.0),
+                Align(
+                  alignment: Alignment.center,
+                  child: MaterialButton(
+                    minWidth: 250,
+                    clipBehavior: Clip.antiAlias,
+                    onPressed: () {
+                      pickImage();
+                    },
+                    child: Container(
+                      height: 100.0,
+                      width: 250,
+                      child: Column(
+                        children: [
+                          Icon(Icons.cloud_upload, color: whiteColor, size: 50),
+                          Text('Brose to choose file',
+                              style: TextStyle(color: whiteColor)),
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          border: Border.all(color: lightPurple),
+                          borderRadius: BorderRadius.circular(20.0)),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: MaterialButton(
-                      minWidth: 250,
-                      clipBehavior: Clip.antiAlias,
-                      onPressed: () {
-                        pickImage();
-                      },
-                      child: Container(
-                        height: 100.0,
-                        width: 250,
-                        child: Column(
-                          children: [
-                            Icon(Icons.cloud_upload,
-                                color: whiteColor, size: 50),
-                            Text('Brose to choose file',
-                                style: TextStyle(color: whiteColor)),
-                          ],
-                        ),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            border: Border.all(color: lightPurple),
-                            borderRadius: BorderRadius.circular(20.0)),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
+                )
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
         ),
       ),
       bottomNavigationBar: MaterialButton(
@@ -580,15 +688,7 @@ class _RequestScreenState extends State<RequestScreen> {
             });
           }
           print(_customLocation);
-//          print('${_titleController.text}');
-//          print('${_descriptionController.text}');
-//          print('_currentLocation : ${_currentLocation}');
-//          print('mapLocation : ${mapLocation}');
-//          print('_custumLocation : ${_customLocation}');
-//          print('${_selectedCategory}');
-//          print('${imagePath}');
-//          generateUniqueId();
-//          assignId();
+
           _validateData();
         },
       ),
@@ -602,7 +702,8 @@ class _RequestScreenState extends State<RequestScreen> {
     if (_titleController.text.isNotEmpty &&
         _descriptionController.text.isNotEmpty &&
         image != null &&
-        _selectedCategory != 'Select Category' &&
+        selectedCategory != 'Select Category' &&
+        selectedSubCategory != 'Select SubCategory' &&
         (_currentLocation != 'Get Current Location' ||
             _customLocation != 'Get Custom Location' ||
             mapLocation != 'Get Map Location')) {
@@ -650,13 +751,7 @@ class _RequestScreenState extends State<RequestScreen> {
       );
 
       Navigator.pop(context);
-//      } else {
-//        await Fluttertoast.showToast(
-//          msg: 'Wait image is Uploading', // message
-//          toastLength: Toast.LENGTH_SHORT, // length
-//          gravity: ToastGravity.BOTTOM, // location
-//          backgroundColor: Colors.black,
-//        );
+
       setState(() {
         _isLoading = false;
       });

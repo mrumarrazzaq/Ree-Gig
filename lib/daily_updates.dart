@@ -35,9 +35,6 @@ class _DailyUpdatesState extends State<DailyUpdates> {
             snapshot.data!.docs.map((DocumentSnapshot document) {
               Map id = document.data() as Map<String, dynamic>;
               storeRequests.add(id);
-//            print('==============================================');
-//            print(storeRequests);
-//            print('Document id : ${document.id}');
               id['id'] = document.id;
             }).toList();
             return Row(

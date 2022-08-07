@@ -15,7 +15,8 @@ int maxLines = 3;
 
 const freelanceMode = 'Freelancer Mode';
 const userMode = 'User Mode';
-
+String selectedCategory = 'Select Category';
+String selectedSubCategory = 'Select SubCategory';
 Color neuColor = const Color(0xFFecf0f3);
 Color darkPink = Colors.pink;
 Color lightPink = Colors.pinkAccent;

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +103,7 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
   @override
   Widget build(BuildContext context) {
     print('------------------------------');
-    print(_time);
+    print(widget.email);
     return Scaffold(
       body: Stack(
 //      shrinkWrap: true,
@@ -133,7 +135,7 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasError) {
-                            print('Something went wrong');
+                            log('Something went wrong');
                           }
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -148,9 +150,7 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map id = document.data() as Map<String, dynamic>;
                             storeReviews.add(id);
-//                  print('==============================================');
-//                  print(storeRequests);
-//                  print('Document id : ${document.id}');
+
                             id['id'] = document.id;
                           }).toList();
                           return Column(
@@ -461,7 +461,9 @@ class _FreelancersReviewsState extends State<FreelancersReviews> {
         ],
       ),
       bottomNavigationBar: widget.email == currentUserEmail
-          ? Container()
+          ? Container(
+              height: 0.0,
+            )
           : Padding(
               padding: const EdgeInsets.only(
                   left: 100.0, right: 100.0, bottom: 10.0),

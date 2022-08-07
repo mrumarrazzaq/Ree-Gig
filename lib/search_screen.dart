@@ -6,7 +6,7 @@ import 'package:ree_gig/home_screen_options.dart';
 import 'package:ree_gig/others_freelancer_profile.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
-import 'package:ree_gig/request_screen.dart';
+import 'package:ree_gig/requestion_section/request_screen.dart';
 import 'package:ree_gig/saved_searches.dart';
 import 'package:ree_gig/search_by_name.dart';
 
