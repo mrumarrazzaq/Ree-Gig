@@ -324,8 +324,8 @@ class _DrawerSectionState extends State<DrawerSection> {
                 toggleSize: 30.0,
                 activeColor: blackColor,
                 inactiveColor: darkPurple,
-                activeText: _userMode,
-                inactiveText: _userMode,
+                activeText: 'User Mode', //_userMode
+                inactiveText: 'Freelancer Mode', //_userMode
                 value: status,
                 borderRadius: 30.0,
                 padding: 3.0,
@@ -339,7 +339,7 @@ class _DrawerSectionState extends State<DrawerSection> {
                   if (status == true) {
                     _userMode = 'Freelancer Mode';
                     Fluttertoast.showToast(
-                      msg: 'Freelancer Mode ON', // message
+                      msg: 'User Mode ON', // Freelancer Mode ON
                       toastLength: Toast.LENGTH_SHORT, // length
                       gravity: ToastGravity.BOTTOM, // location
                       backgroundColor: Colors.black,
@@ -347,7 +347,7 @@ class _DrawerSectionState extends State<DrawerSection> {
                   } else {
                     _userMode = 'User Mode';
                     Fluttertoast.showToast(
-                      msg: 'User Mode ON', // message
+                      msg: 'Freelancer Mode ON', // User Mode ON
                       toastLength: Toast.LENGTH_SHORT, // length
                       gravity: ToastGravity.BOTTOM, // location
                       backgroundColor: lightPurple,

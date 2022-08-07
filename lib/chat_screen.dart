@@ -583,7 +583,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       gravity: ToastGravity.BOTTOM, // location
                       backgroundColor: Colors.green,
                     );
-                    Navigator.pop(context);
                   },
                   child: const Text(
                     'COMPLETED',

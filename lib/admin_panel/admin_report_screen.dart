@@ -90,7 +90,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
 //                            shrinkWrap: true,
                   children: [
                     storeReports.isEmpty
-                        ? const Text('No User find')
+                        ? const Text('No report find')
                         : Container(),
                     for (int i = 0; i < storeReports.length; i++) ...[
                       SwipeActionCell(

@@ -68,15 +68,11 @@ class _AdminUserScreenState extends State<AdminUserScreen> {
                 snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map id = document.data() as Map<String, dynamic>;
                   storeUsers.add(id);
-//                  print('==============================================');
-//                  print(storeRequests);
-//                  print('Document id : ${document.id}');
                   id['id'] = document.id;
                 }).toList();
-                print('Total Registerd Users ${storeUsers.length}');
+                print('Total Registered Users ${storeUsers.length}');
                 saveUsers(storeUsers.length.toDouble());
                 return Column(
-//                            shrinkWrap: true,
                   children: [
                     storeUsers.isEmpty
                         ? const Text('No User find')

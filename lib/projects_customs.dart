@@ -136,7 +136,7 @@ class _CustomContainer1State extends State<CustomContainer1> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 70) {
+      if (_length <= 100) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;
@@ -357,7 +357,7 @@ class _CustomContainer2State extends State<CustomContainer2> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 70) {
+      if (_length <= 100) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;
@@ -603,7 +603,7 @@ class _CustomContainer3State extends State<CustomContainer3> {
   descriptionLength() {
     setState(() {
       _length = widget.description.length;
-      if (_length <= 70) {
+      if (_length <= 100) {
         _isArrowVisible = false;
       } else {
         _isArrowVisible = true;

@@ -89,7 +89,7 @@ class _AdminRequestScreenState extends State<AdminRequestScreen> {
                 return Column(
                   children: [
                     storeRequests.isEmpty
-                        ? const Text('No User find')
+                        ? const Text('No request find')
                         : Container(),
                     for (int i = 0; i < storeRequests.length; i++) ...[
                       SwipeActionCell(
