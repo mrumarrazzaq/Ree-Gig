@@ -9,7 +9,6 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:ree_gig/others_freelancer_profile.dart';
-import 'package:ree_gig/post_details.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -650,7 +649,6 @@ class LeftBubble extends StatelessWidget {
 //  double height;
   @override
   Widget build(BuildContext context) {
-    print('Left');
     var half = MediaQuery.of(context).size.width / 1.8;
     var length = message.length.toDouble();
     return Padding(
