@@ -706,6 +706,7 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                       TextFormField(
                         keyboardType: TextInputType.text,
                         cursorColor: blackColor,
+                        maxLength: 50,
                         style: TextStyle(color: blackColor),
                         decoration: InputDecoration(
                           isDense: true,
@@ -730,7 +731,6 @@ class _CreateRequestCategoryState extends State<CreateRequestCategory> {
                               : 'Enter Request Category',
                           labelText: 'Request Category',
 //                           hintStyle: TextStyle(color: ),
-
                           labelStyle: TextStyle(color: blackColor),
                           prefixIcon: Icon(
                             Icons.category,

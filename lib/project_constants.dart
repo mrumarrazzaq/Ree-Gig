@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 //Purple lightPurple #821591
 //Purple darkPurple #540E79
@@ -13,10 +14,14 @@ bool isUserLogout = true;
 
 int maxLines = 3;
 
+class Controller extends GetxController {
+  var category = 'Category'.obs;
+  var subCategory = 'SubCategory'.obs;
+}
+
 const freelanceMode = 'Freelancer Mode';
 const userMode = 'User Mode';
-String selectedCategory = 'Select Category';
-String selectedSubCategory = 'Select SubCategory';
+
 Color neuColor = const Color(0xFFecf0f3);
 Color darkPink = Colors.pink;
 Color lightPink = Colors.pinkAccent;
@@ -38,14 +43,14 @@ preciseTime() {
   int hr = currentDateTime.hour - 12;
   int min = currentDateTime.minute;
   int sec = currentDateTime.second;
-  int miliSec = currentDateTime.microsecond;
+  int milliSec = currentDateTime.microsecond;
   time = hr.toString() +
       ' : ' +
       min.toString() +
       ' : ' +
       sec.toString() +
       ' : ' +
-      miliSec.toString();
+      milliSec.toString();
   return time;
 }
 

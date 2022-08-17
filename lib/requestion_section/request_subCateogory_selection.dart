@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:ree_gig/project_constants.dart';
 
 class RequestSubCategorySelection extends StatefulWidget {
@@ -15,6 +17,8 @@ class RequestSubCategorySelection extends StatefulWidget {
 
 class _RequestSubCategorySelectionState
     extends State<RequestSubCategorySelection> {
+  String value = '';
+  final Controller getValue = Get.put(Controller());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +68,10 @@ class _RequestSubCategorySelectionState
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   storeSubCategories.isEmpty
-                      ? const Text('No Sub Category Find')
+                      ? const Padding(
+                          padding: EdgeInsets.only(top: 100.0),
+                          child: Center(child: Text('No Sub Category Find')),
+                        )
                       : Container(),
                   for (int i = 0; i < storeSubCategories.length; i++) ...[
                     Card(
@@ -72,7 +79,7 @@ class _RequestSubCategorySelectionState
                       child: ListTile(
                         onTap: () {
                           setState(() {
-                            selectedSubCategory =
+                            getValue.subCategory.value =
                                 storeSubCategories[i]['SubCategory Name'];
                           });
                           Navigator.pop(context);

@@ -51,9 +51,6 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
             snapshot.data!.docs.map((DocumentSnapshot document) {
               Map id = document.data() as Map<String, dynamic>;
               storeRequests.add(id);
-//            print('==============================================');
-//            print(storeRequests);
-//            print('Document id : ${document.id}');
               id['id'] = document.id;
             }).toList();
             return Row(
@@ -116,7 +113,7 @@ class CustomPoster extends StatelessWidget {
   Timestamp timeStamp;
   @override
   Widget build(BuildContext context) {
-    String howManyAgo = 'error';
+    String howManyAgo = 'min';
     int what = 0;
     DateTime dt = timeStamp.toDate();
     DateTime now = DateTime.now();
@@ -166,8 +163,6 @@ class CustomPoster extends StatelessWidget {
     }
     return GestureDetector(
       onTap: () {
-        print('url-----------------');
-        print(url);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -177,24 +172,13 @@ class CustomPoster extends StatelessWidget {
                 userProfileUrl: url,
                 requestCategory: category,
               ),
-//                  RequestDetail(
-//                userName: name,
-//                userEmail: email,
-//                userProfileUrl: url,
-//                requestTitle: requestTitle,
-//                requestDescription: description,
-//                requestCategory: category,
-//                requestImagePath: imagePath,
-//                requestLocation: location,
-//                imageType: imageType,
-//              ),
             ));
       },
       child: Stack(
         children: [
           Container(
-            height: 155,
-            width: 150,
+            height: MediaQuery.of(context).size.height * 0.25, //155
+            width: MediaQuery.of(context).size.width * 0.45, //150
             margin: const EdgeInsets.only(
                 left: 30.0, right: 20.0, top: 5.0, bottom: 5.0),
             decoration: BoxDecoration(
@@ -225,8 +209,8 @@ class CustomPoster extends StatelessWidget {
             child: Align(
                 alignment: Alignment.center,
                 child: Container(
-                  width: 140,
-                  height: 145,
+                  width: MediaQuery.of(context).size.width * 0.43, //140
+                  height: MediaQuery.of(context).size.height * 0.23, //145
                   padding: const EdgeInsets.all(5.0),
                   child: Column(
                     children: [

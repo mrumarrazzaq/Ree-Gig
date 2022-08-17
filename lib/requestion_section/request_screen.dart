@@ -10,10 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/utils/google_map.dart';
-
+import 'package:get/get.dart';
 import 'request_category_selection.dart';
 import 'request_subCateogory_selection.dart';
 
@@ -28,7 +29,9 @@ class _RequestScreenState extends State<RequestScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _currentLocationController =
       TextEditingController();
-
+  final Controller getValue = Get.put(Controller());
+  String selectedCategory = 'Select Category';
+  String selectedSubCategory = 'Select SubCategory';
   List<bool> isVisible = [true, false, false];
   int selectedValue = 0;
   bool _isLoading = false;
@@ -44,24 +47,6 @@ class _RequestScreenState extends State<RequestScreen> {
   File? image;
   String _uniqueId = '';
 
-  List<String> categoriesList = [
-    'Admin',
-    'Finance & Account',
-    'Art & Crafts',
-    'Freelance',
-    'Education',
-    'Cleaning Service',
-    'Food & Beverages',
-    'Construction',
-    'House Related',
-    'Business',
-    'IT',
-    'Events',
-    'Recruitment',
-    'Logistics',
-    'Fashion',
-    'Others'
-  ];
   categoriesStreams() {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -282,8 +267,8 @@ class _RequestScreenState extends State<RequestScreen> {
           'Profile Image URL': _profileImageURL,
           'Request Title': _titleController.text,
           'Request Description': _descriptionController.text,
-          'Selected Category': selectedCategory,
-          'Selected SubCategory': selectedSubCategory,
+          'Selected Category': getValue.category.value,
+          'Selected SubCategory': getValue.subCategory.value,
           'Current Address': location,
           'Request Image URL': imageUrl.toString(),
         })
@@ -302,8 +287,8 @@ class _RequestScreenState extends State<RequestScreen> {
           'Profile Image URL': _profileImageURL,
           'Request Title': _titleController.text,
           'Request Description': _descriptionController.text,
-          'Selected Category': selectedCategory,
-          'Selected SubCategory': selectedSubCategory,
+          'Selected Category': getValue.category.value,
+          'Selected SubCategory': getValue.subCategory.value,
           'Current Address': location,
           'Request Image URL': imageUrl.toString(),
         })
@@ -328,7 +313,10 @@ class _RequestScreenState extends State<RequestScreen> {
       });
       print(_personName);
       print(_profileImageURL);
-      setState(() {});
+      setState(() {
+        getValue.category.value = 'Category';
+        getValue.subCategory.value = 'SubCategory';
+      });
     } catch (e) {
       print(e.toString());
     }
@@ -343,6 +331,11 @@ class _RequestScreenState extends State<RequestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('======================');
+    print('Request Screen Build is Running');
+    print('======================');
+    print('======================');
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -431,14 +424,13 @@ class _RequestScreenState extends State<RequestScreen> {
               controller: _descriptionController,
               maxLenght: 200,
             ),
-            MyInputField(
-                icon: Icons.category,
-                hint: selectedCategory,
-                widget: IconButton(
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: lightPurple,
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: ListTile(
+                title: const Text('Select Category'),
+                subtitle: Obx(() => Text(getValue.category.value)),
+                trailing: IconButton(
+                  icon: const Icon(Icons.keyboard_arrow_down),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -447,55 +439,96 @@ class _RequestScreenState extends State<RequestScreen> {
                       ),
                     );
                   },
-                )
-
-                // DropdownButton(
-                //   icon: Icon(
-                //     Icons.keyboard_arrow_down,
-                //     color: lightPurple,
-                //   ),
-                //   iconSize: 32,
-                //   elevation: 4,
-                //   underline: Container(
-                //     height: 0.0,
-                //   ),
-                //   items: categoriesList.map<DropdownMenuItem<String>>(
-                //     (String value) {
-                //       return DropdownMenuItem<String>(
-                //         value: value.toString(),
-                //         child: Text(value.toString()),
-                //       );
-                //     },
-                //   ).toList(),
-                //   onChanged: (String? newValue) {
-                //     setState(() {
-                //       _selectedCategory = newValue!;
-                //       print(newValue);
-                //     });
-                //   },
-                // ),
                 ),
-            Visibility(
-              visible: selectedCategory == "Select Category" ? false : true,
-              child: MyInputField(
-                  icon: Icons.category,
-                  hint: selectedSubCategory,
-                  widget: IconButton(
-                    icon: Icon(
-                      Icons.keyboard_arrow_down,
-                      color: lightPurple,
-                    ),
+              ),
+            ),
+            // MyInputField(
+            //     icon: Icons.category,
+            //     hint: getValue.category,
+            //     widget: IconButton(
+            //       icon: Icon(
+            //         Icons.keyboard_arrow_down,
+            //         color: lightPurple,
+            //       ),
+            //       onPressed: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => RequestCategorySelection(),
+            //           ),
+            //         );
+            //       },
+            //     )
+            //
+            //     // DropdownButton(
+            //     //   icon: Icon(
+            //     //     Icons.keyboard_arrow_down,
+            //     //     color: lightPurple,
+            //     //   ),
+            //     //   iconSize: 32,
+            //     //   elevation: 4,
+            //     //   underline: Container(
+            //     //     height: 0.0,
+            //     //   ),
+            //     //   items: categoriesList.map<DropdownMenuItem<String>>(
+            //     //     (String value) {
+            //     //       return DropdownMenuItem<String>(
+            //     //         value: value.toString(),
+            //     //         child: Text(value.toString()),
+            //     //       );
+            //     //     },
+            //     //   ).toList(),
+            //     //   onChanged: (String? newValue) {
+            //     //     setState(() {
+            //     //       _selectedCategory = newValue!;
+            //     //       print(newValue);
+            //     //     });
+            //     //   },
+            //     // ),
+            //     ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Visibility(
+                visible: true,
+                // getValue.category.value == "Select Category" ? false : true,
+                child: ListTile(
+                  title: const Text('Select SubCategory'),
+                  subtitle: Obx(() => Text(getValue.subCategory.value)),
+                  trailing: IconButton(
+                    icon: Icon(Icons.keyboard_arrow_down),
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => RequestSubCategorySelection(
-                            category: selectedCategory,
+                            category: getValue.category.value,
                           ),
                         ),
                       );
                     },
-                  )),
+                  ),
+                ),
+
+                // MyInputField(
+                //     icon: Icons.category,
+                //     hint: Obx(() =>getValue.subCategory),
+                //     widget: IconButton(
+                //       icon: Icon(
+                //         Icons.keyboard_arrow_down,
+                //         color: lightPurple,
+                //       ),
+                //       onPressed: () {
+                //         Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //             builder: (context) => RequestSubCategorySelection(
+                //               category: selectedCategory,
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //     )),
+              ),
             ),
             RadioListTile<int>(
               value: 0,
@@ -690,7 +723,7 @@ class _RequestScreenState extends State<RequestScreen> {
             });
           }
           print(_customLocation);
-
+          print(getValue.subCategory.value);
           _validateData();
         },
       ),
@@ -703,9 +736,8 @@ class _RequestScreenState extends State<RequestScreen> {
     });
     if (_titleController.text.isNotEmpty &&
         _descriptionController.text.isNotEmpty &&
-        image != null &&
-        selectedCategory != 'Select Category' &&
-        selectedSubCategory != 'Select SubCategory' &&
+        getValue.category.value != 'Category' &&
+        getValue.subCategory.value != 'SubCategory' &&
         (_currentLocation != 'Get Current Location' ||
             _customLocation != 'Get Custom Location' ||
             mapLocation != 'Get Map Location')) {
@@ -714,10 +746,18 @@ class _RequestScreenState extends State<RequestScreen> {
       print('_currentLocation :  $_currentLocation');
       print('_customLocation  :  $_customLocation');
       print('mapLocation      :  $mapLocation');
-      setState(() {
-        _isUpLoading = true;
-      });
-      await uploadImage(imagePath);
+      if (image == null) {
+        setState(() {
+          imageUrl =
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwWUNzmcIOMSUlk1hawu3u8TL-N5kW_cEnXw&usqp=CAU';
+        });
+      } else {
+        setState(() {
+          _isUpLoading = true;
+        });
+        await uploadImage(imagePath);
+      }
+
 //      if (_isUpLoading == false) {
       if (_currentLocation != 'Get Current Location') {
         print('======================================');

@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:ree_gig/project_constants.dart';
-
-import 'request_screen.dart';
-import 'request_subCateogory_selection.dart';
+import 'package:ree_gig/requestion_section/request_screen.dart';
 
 class RequestCategorySelection extends StatefulWidget {
   const RequestCategorySelection({Key? key}) : super(key: key);
@@ -16,6 +16,8 @@ class RequestCategorySelection extends StatefulWidget {
 }
 
 class _RequestCategorySelectionState extends State<RequestCategorySelection> {
+  String value = '';
+  final Controller getValue = Get.put(Controller());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,9 +76,10 @@ class _RequestCategorySelectionState extends State<RequestCategorySelection> {
                         child: ListTile(
                           onTap: () {
                             setState(() {
-                              selectedCategory =
+                              getValue.category.value =
                                   storeCategories[i]['Category Name'];
                             });
+
                             Navigator.pop(context);
                           },
                           title: Text(storeCategories[i]['Category Name']),

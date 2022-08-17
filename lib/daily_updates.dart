@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ree_gig/others_freelancer_profile.dart';
@@ -37,7 +38,43 @@ class _DailyUpdatesState extends State<DailyUpdates> {
               storeRequests.add(id);
               id['id'] = document.id;
             }).toList();
-            return Row(
+            return
+                //   CarouselSlider.builder(
+                //   itemCount: storeRequests.length,
+                //   itemBuilder:
+                //       (BuildContext context, int itemIndex, int pageViewIndex) {
+                //     return CustomPoster(
+                //       name: storeRequests[itemIndex]['User Name'],
+                //       email: storeRequests[itemIndex]['User Email'],
+                //       url: storeRequests[itemIndex]['Profile Image URL'],
+                //       category: storeRequests[itemIndex]['Selected Category'],
+                //       requestTitle: storeRequests[itemIndex]['Request Title'],
+                //       description: storeRequests[itemIndex]['Request Description'],
+                //       imagePath: storeRequests[itemIndex]['Request Image URL'],
+                //       location: storeRequests[itemIndex]['Current Address'],
+                //       imageType: 'Network',
+                //       timeStamp: storeRequests[itemIndex]['Created AT'],
+                //     );
+                //   },
+                //   options: CarouselOptions(
+                //     enlargeCenterPage: true,
+                //     // height: 400,
+                //     // aspectRatio: 2,
+                //     // viewportFraction: 0.8,
+                //     initialPage: 0,
+                //     // enableInfiniteScroll: true,
+                //     // reverse: false,
+                //     // autoPlay: true,
+                //     // autoPlayInterval: const Duration(seconds: 3),
+                //     // autoPlayAnimationDuration:
+                //     //     const Duration(milliseconds: 800),
+                //     // autoPlayCurve: Curves.fastOutSlowIn,
+                //     // enlargeCenterPage: true,
+                //     // scrollDirection: Axis.horizontal,
+                //   ),
+                // );
+
+                Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 storeRequests.isEmpty
@@ -186,8 +223,8 @@ class CustomPoster extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            height: 155,
-            width: 150,
+            height: MediaQuery.of(context).size.height * 0.25, //155 //0.25
+            width: MediaQuery.of(context).size.width * 0.45, //150  //0.45
             margin: const EdgeInsets.only(
                 left: 30.0, right: 20.0, top: 5.0, bottom: 5.0),
             decoration: BoxDecoration(
@@ -218,8 +255,10 @@ class CustomPoster extends StatelessWidget {
             child: Align(
                 alignment: Alignment.center,
                 child: Container(
-                  width: 140,
-                  height: 145,
+                  width:
+                      MediaQuery.of(context).size.width * 0.43, //140   //0.43
+                  height:
+                      MediaQuery.of(context).size.height * 0.23, //145  //0.23
                   padding: const EdgeInsets.all(5.0),
                   child: Column(
                     children: [
