@@ -6,7 +6,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ree_gig/admin_panel/admin_signin.dart';
 import 'package:ree_gig/home_screen.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/security_section/register_screen2.dart';
@@ -344,20 +343,20 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AdminSignInScreen(),
-                        ),
-                      )
-                    },
-                    child: const Text(
-                      'Admin Login',
-                      style: TextStyle(fontSize: 14.0),
-                    ),
-                  ),
+                  // TextButton(
+                  //   onPressed: () => {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => AdminSignInScreen(),
+                  //       ),
+                  //     )
+                  //   },
+                  //   child: const Text(
+                  //     'Admin Login',
+                  //     style: TextStyle(fontSize: 14.0),
+                  //   ),
+                  // ),
                   InkWell(
                     onTap: () => {
                       Navigator.push(

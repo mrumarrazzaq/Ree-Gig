@@ -1,17 +1,13 @@
 // ignore_for_file: avoid_print
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ree_gig/daily_updates.dart';
 import 'package:ree_gig/drawer_section/drawer_section.dart';
-import 'package:ree_gig/others_freelancer_profile.dart';
 import 'package:ree_gig/home_screen_options.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/projects_customs.dart';
 import 'package:ree_gig/recommended_for_you.dart';
-import 'package:ree_gig/request_detail.dart';
 import 'package:ree_gig/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -230,88 +226,149 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       topLeft: Radius.circular(15.0),
                       topRight: Radius.circular(15.0)),
                 ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
+                  child: Row(
                     children: [
-                      //Recommended For You
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20.0, top: 20.0, bottom: 10.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Container(
-                                color: darkPurple,
-                                height: 20,
-                                width: 3.0,
-                              ),
-                            ),
-                            const Text.rich(
-                              TextSpan(
-                                text: 'Recommended',
-                                style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 20), // default text style
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: ' For You',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        child: RecommendedForYou(),
-                      ),
-
-                      //Daily Updates
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 10.0, left: 20.0, bottom: 10.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Container(
-                                color: darkPurple,
-                                height: 20,
-                                width: 3.0,
-                              ),
-                            ),
-                            const Text.rich(
-                              TextSpan(
-                                text: 'Daily',
-                                style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 20), // default text style
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: ' Updates',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
                         physics: const BouncingScrollPhysics(),
                         child: DailyUpdates(),
+                      ),
+                      // Recommended For You
+
+                      SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: RecommendedForYou(),
                       ),
                     ],
                   ),
                 ),
+                // SingleChildScrollView(
+                //   scrollDirection: Axis.vertical,
+                //   child: Column(
+                //     children: [
+                //       //Recommended For You
+                //       Padding(
+                //         padding: const EdgeInsets.only(
+                //             left: 20.0, top: 20.0, bottom: 10.0),
+                //         child: Row(
+                //           children: [
+                //             Padding(
+                //               padding:
+                //                   const EdgeInsets.symmetric(horizontal: 10.0),
+                //               child: Container(
+                //                 color: darkPurple,
+                //                 height: 20,
+                //                 width: 3.0,
+                //               ),
+                //             ),
+                //             const Text.rich(
+                //               TextSpan(
+                //                 text: 'Recommended',
+                //                 style: TextStyle(
+                //                     fontStyle: FontStyle.italic,
+                //                     fontSize: 20), // default text style
+                //                 children: <TextSpan>[
+                //                   TextSpan(
+                //                       text: ' For You',
+                //                       style: TextStyle(
+                //                           fontWeight: FontWeight.bold)),
+                //                 ],
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //       SingleChildScrollView(
+                //         scrollDirection: Axis.horizontal,
+                //         physics: const BouncingScrollPhysics(),
+                //         child: RecommendedForYou(),
+                //       ),
+                //
+                //       //Daily Updates
+                //       Padding(
+                //         padding: const EdgeInsets.only(
+                //             top: 10.0, left: 20.0, bottom: 10.0),
+                //         child: Row(
+                //           children: [
+                //             Padding(
+                //               padding:
+                //                   const EdgeInsets.symmetric(horizontal: 10.0),
+                //               child: Container(
+                //                 color: darkPurple,
+                //                 height: 20,
+                //                 width: 3.0,
+                //               ),
+                //             ),
+                //             const Text.rich(
+                //               TextSpan(
+                //                 text: 'Daily',
+                //                 style: TextStyle(
+                //                     fontStyle: FontStyle.italic,
+                //                     fontSize: 20), // default text style
+                //                 children: <TextSpan>[
+                //                   TextSpan(
+                //                       text: ' Updates',
+                //                       style: TextStyle(
+                //                           fontWeight: FontWeight.bold)),
+                //                 ],
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //       SingleChildScrollView(
+                //         scrollDirection: Axis.horizontal,
+                //         physics: const BouncingScrollPhysics(),
+                //         child: DailyUpdates(),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Container(
+              height: 35,
+              margin: const EdgeInsets.only(top: 160),
+              decoration: const BoxDecoration(
+                color: Colors.transparent, //whiteColor
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15.0),
+                    topRight: Radius.circular(15.0)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text.rich(
+                    TextSpan(
+                      text: '     Daily',
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 16), // default text style
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: ' Update',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Recommended',
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 16), // default text style
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: ' For You',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -343,7 +400,7 @@ class HomeCircularOptions extends StatelessWidget {
               maxRadius: 25.0,
             ),
             const SizedBox(height: 2.0),
-            Container(
+            SizedBox(
               height: 100,
               child: Text(title,
                   textAlign: TextAlign.center,

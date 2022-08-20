@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:ree_gig/admin_panel/start_myadmin_panel.dart';
 import 'package:ree_gig/home_screen.dart';
 import 'package:ree_gig/project_constants.dart';
 import 'package:ree_gig/security_section/forgot_password.dart';
@@ -153,10 +152,7 @@ class _MyAppState extends State<MyApp> {
 //        initialRoute: WelcomeScreen.id,
                   routes: {
                     WelcomeScreen.id: (context) => const WelcomeScreen(),
-//                SigninScreen.id: (context) => SigninScreen(),
-//                RegisterScreen.id: (context) => const RegisterScreen(),
                     ForgotPassword.id: (context) => const ForgotPassword(),
-//                ChangePassword.id: (context) => const ChangePassword(),
                     HomeScreen.id: (context) => HomeScreen(),
                   },
                   home: FutureBuilder(
@@ -166,8 +162,6 @@ class _MyAppState extends State<MyApp> {
                       if (snapshot.data == false) {
                         print('Welcome Screen Called');
                         return const WelcomeScreen();
-//                      HomeScreen();
-//                    const WelcomeScreen();
                       }
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return MaterialApp(
@@ -197,7 +191,13 @@ class _MyAppState extends State<MyApp> {
                       }
                       print('Home Screen Called');
                       // ignore: unrelated_type_equality_checks
-                      return _isAdminLogin ? StartMyAdminPanel() : HomeScreen();
+                      return _isAdminLogin
+                          ? const Scaffold(
+                              body: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : HomeScreen();
                     },
                   ),
                 );
